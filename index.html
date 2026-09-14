@@ -301,6 +301,10 @@
       display: none;
     }
 
+    #apCategoryFields.hidden {
+      display: none;
+    }
+
     .category-title {
       font-size: 1.32rem;
       font-weight: 800;
@@ -2510,18 +2514,20 @@
   <div id="addPhraseModal" class="modal-backdrop">
     <div class="modal-card wide">
       <div class="modal-header">
-        <div class="modal-title">✏️ 문장 추가</div>
+        <div class="modal-title" id="addModalTitle">✏️ 문장 추가</div>
         <button class="modal-close" id="addModalCloseBtn">&times;</button>
       </div>
       <form id="addPhraseForm">
-        <div class="form-field">
-          <label for="apCategory">카테고리</label>
-          <select id="apCategory" required></select>
-        </div>
-        <div class="form-field">
-          <label for="apSubgroup">세부 분류 (선택)</label>
-          <select id="apSubgroup"></select>
-          <div class="form-hint">관련 있는 문장들 가까이에 추가됩니다.</div>
+        <div id="apCategoryFields">
+          <div class="form-field">
+            <label for="apCategory">카테고리</label>
+            <select id="apCategory" required></select>
+          </div>
+          <div class="form-field">
+            <label for="apSubgroup">세부 분류 (선택)</label>
+            <select id="apSubgroup"></select>
+            <div class="form-hint">관련 있는 문장들 가까이에 추가됩니다.</div>
+          </div>
         </div>
         <div class="form-field">
           <label for="apEnglish">영어 문장 (선택)</label>
@@ -2677,6 +2683,7 @@
           <div class="action-btns">
             <button class="action-btn listen-btn" title="원어민 음성 듣기">🔊</button>
             <button class="action-btn copy-btn" title="문장 복사">📋</button>
+            <button class="action-btn edit-btn" title="수정">✏️</button>
             <button class="action-btn delete-btn" title="삭제">🗑️</button>
           </div>
         </div>
@@ -2794,8 +2801,102 @@
       btns.appendChild(btn);
     }
 
+    function ensureEditButton(card) {
+      const btns = card.querySelector('.action-btns');
+      if (!btns || btns.querySelector('.edit-btn')) return;
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'action-btn edit-btn';
+      btn.title = '수정';
+      btn.textContent = '✏️';
+      const deleteBtn = btns.querySelector('.delete-btn');
+      if (deleteBtn) {
+        btns.insertBefore(btn, deleteBtn);
+      } else {
+        btns.appendChild(btn);
+      }
+    }
+
+    // 기존(built-in) 문장 수정 내용 저장 (원본 HTML은 그대로 두고 저장된 내용으로 덮어써서 표시)
+    const BUILTIN_EDITS_KEY = 'builtinPhraseEdits';
+
+    function loadBuiltinOverrides() {
+      try {
+        return JSON.parse(localStorage.getItem(BUILTIN_EDITS_KEY) || '{}');
+      } catch (e) {
+        return {};
+      }
+    }
+
+    function saveBuiltinOverride(id, data) {
+      const all = loadBuiltinOverrides();
+      all[id] = data;
+      try {
+        localStorage.setItem(BUILTIN_EDITS_KEY, JSON.stringify(all));
+      } catch (e) {}
+    }
+
+    // .en 요소의 렌더링된 DOM에서 *강세* 표기가 포함된 원본 텍스트를 복원
+    function reconstructEnSource(enEl) {
+      let result = '';
+      Array.from(enEl.childNodes).forEach(node => {
+        if (node.nodeType === Node.TEXT_NODE) {
+          result += node.textContent;
+        } else if (node.nodeType === Node.ELEMENT_NODE) {
+          result += node.classList.contains('stress') ? `*${node.textContent}*` : node.textContent;
+        }
+      });
+      return result;
+    }
+
+    // 카드의 문장/발음기호/한글 뜻/메모 내용을 새 값으로 갱신
+    function applyContentToCard(card, data) {
+      const enEl = card.querySelector('.en');
+      enEl.textContent = data.en;
+      applyStressAndWords(enEl);
+
+      const enContainer = card.querySelector('.en-container');
+      let pronPanel = card.querySelector('.pron-panel');
+      if (data.ipa) {
+        if (!pronPanel) {
+          pronPanel = document.createElement('div');
+          pronPanel.className = 'pron-panel';
+          pronPanel.innerHTML = '<div class="ipa"></div>';
+          enContainer.insertAdjacentElement('afterend', pronPanel);
+        }
+        pronPanel.querySelector('.ipa').textContent = data.ipa;
+      } else if (pronPanel) {
+        pronPanel.remove();
+      }
+
+      let koEl = card.querySelector('.ko');
+      if (data.ko) {
+        if (!koEl) {
+          koEl = document.createElement('div');
+          koEl.className = 'ko';
+          (card.querySelector('.pron-panel') || enContainer).insertAdjacentElement('afterend', koEl);
+        }
+        koEl.textContent = data.ko;
+      } else if (koEl) {
+        koEl.remove();
+      }
+
+      let noteEl = card.querySelector('.note');
+      if (data.note) {
+        if (!noteEl) {
+          noteEl = document.createElement('div');
+          noteEl.className = 'note';
+          card.appendChild(noteEl);
+        }
+        noteEl.innerHTML = '💡 ' + escapeHtml(data.note);
+      } else if (noteEl) {
+        noteEl.remove();
+      }
+    }
+
     function initBuiltinPhrases() {
       const hidden = loadHiddenBuiltinIds();
+      const overrides = loadBuiltinOverrides();
       document.querySelectorAll('.category').forEach(cat => {
         if (cat.id === 'cat-tips') return;
         const phrases = cat.querySelectorAll('.phrase');
@@ -2807,6 +2908,10 @@
             card.remove();
             return;
           }
+          if (overrides[builtinId]) {
+            applyContentToCard(card, overrides[builtinId]);
+          }
+          ensureEditButton(card);
           ensureDeleteButton(card);
         });
       });
@@ -2817,13 +2922,29 @@
     const addModalCloseBtn = document.getElementById('addModalCloseBtn');
     const addModalCancelBtn = document.getElementById('addModalCancelBtn');
     const addPhraseForm = document.getElementById('addPhraseForm');
+    const addModalTitle = document.getElementById('addModalTitle');
+    const apCategoryFields = document.getElementById('apCategoryFields');
+
+    // 수정 모드 상태: null이면 새 문장 추가, 아니면 수정 중인 문장 정보
+    let editingType = null;
+    let editingId = null;
+
+    function resetModalToAddMode() {
+      editingType = null;
+      editingId = null;
+      addModalTitle.textContent = '✏️ 문장 추가';
+      addPhraseForm.querySelector('button[type="submit"]').textContent = '추가하기';
+      apCategoryFields.classList.remove('hidden');
+    }
 
     function closeAddModal() {
       addPhraseModal.classList.remove('show');
       addPhraseForm.reset();
+      resetModalToAddMode();
     }
 
     openAddPhraseBtn.addEventListener('click', () => {
+      resetModalToAddMode();
       populateCategorySelect();
       populateSubgroupSelect(document.getElementById('apCategory').value);
       addPhraseModal.classList.add('show');
@@ -2836,6 +2957,46 @@
     addPhraseModal.addEventListener('click', (e) => {
       if (e.target === addPhraseModal) closeAddModal();
     });
+
+    function openEditModalForManual(id) {
+      const item = loadManualPhrases().find(p => p.id === id);
+      if (!item) return;
+      editingType = 'manual';
+      editingId = id;
+      addModalTitle.textContent = '✏️ 문장 수정';
+      addPhraseForm.querySelector('button[type="submit"]').textContent = '수정하기';
+      apCategoryFields.classList.remove('hidden');
+
+      populateCategorySelect();
+      document.getElementById('apCategory').value = item.categoryId;
+      populateSubgroupSelect(item.categoryId);
+      if (typeof item.groupIndex === 'number') {
+        document.getElementById('apSubgroup').value = String(item.groupIndex);
+      }
+      document.getElementById('apEnglish').value = item.en || '';
+      document.getElementById('apIpa').value = item.ipa || '';
+      document.getElementById('apKorean').value = item.ko || '';
+      document.getElementById('apNote').value = item.note || '';
+      addPhraseModal.classList.add('show');
+    }
+
+    function openEditModalForBuiltin(card, builtinId) {
+      editingType = 'builtin';
+      editingId = builtinId;
+      addModalTitle.textContent = '✏️ 문장 수정';
+      addPhraseForm.querySelector('button[type="submit"]').textContent = '수정하기';
+      apCategoryFields.classList.add('hidden');
+
+      const enEl = card.querySelector('.en');
+      const ipaEl = card.querySelector('.ipa');
+      const koEl = card.querySelector('.ko');
+      const noteEl = card.querySelector('.note');
+      document.getElementById('apEnglish').value = enEl ? reconstructEnSource(enEl) : '';
+      document.getElementById('apIpa').value = ipaEl ? ipaEl.textContent.trim() : '';
+      document.getElementById('apKorean').value = koEl ? koEl.textContent.trim() : '';
+      document.getElementById('apNote').value = noteEl ? noteEl.textContent.replace(/^💡\s*/, '').trim() : '';
+      addPhraseModal.classList.add('show');
+    }
 
     // 외부 API 호출 시 응답이 없거나 느릴 때 무한 대기하지 않도록 타임아웃 처리
     async function fetchWithTimeout(url, ms) {
@@ -2992,18 +3153,44 @@
       submitBtn.disabled = false;
       submitBtn.textContent = originalBtnText;
 
-      const data = {
-        id: 'manual-' + Date.now() + '-' + Math.random().toString(36).slice(2, 7),
-        categoryId, groupIndex: isNaN(groupIndex) ? null : groupIndex, en, ipa, ko, note
-      };
+      if (editingType === 'manual') {
+        const list = loadManualPhrases();
+        const idx = list.findIndex(p => p.id === editingId);
+        if (idx !== -1) {
+          const updated = {
+            ...list[idx],
+            categoryId,
+            groupIndex: isNaN(groupIndex) ? list[idx].groupIndex : groupIndex,
+            en, ipa, ko, note
+          };
+          list[idx] = updated;
+          saveManualPhrases(list);
+          const oldCard = document.querySelector(`.phrase[data-manual-id="${editingId}"]`);
+          if (oldCard) oldCard.remove();
+          addPhraseToDOM(categoryId, updated);
+        }
+        closeAddModal();
+        showToast('✏️ 문장이 수정되었습니다.');
+      } else if (editingType === 'builtin') {
+        saveBuiltinOverride(editingId, { en, ipa, ko, note });
+        const card = document.querySelector(`.phrase[data-builtin-id="${editingId}"]`);
+        if (card) applyContentToCard(card, { en, ipa, ko, note });
+        closeAddModal();
+        showToast('✏️ 문장이 수정되었습니다.');
+      } else {
+        const data = {
+          id: 'manual-' + Date.now() + '-' + Math.random().toString(36).slice(2, 7),
+          categoryId, groupIndex: isNaN(groupIndex) ? null : groupIndex, en, ipa, ko, note
+        };
 
-      const list = loadManualPhrases();
-      list.push(data);
-      saveManualPhrases(list);
+        const list = loadManualPhrases();
+        list.push(data);
+        saveManualPhrases(list);
 
-      addPhraseToDOM(categoryId, data);
-      closeAddModal();
-      showToast('✅ 문장이 추가되었습니다!');
+        addPhraseToDOM(categoryId, data);
+        closeAddModal();
+        showToast('✅ 문장이 추가되었습니다!');
+      }
     });
 
     // 6. 범례 바 접기/펼치기
@@ -3024,8 +3211,22 @@
       setGuideCollapsed(!guideItems.classList.contains('collapsed'));
     });
 
-    // 7. 카드 클릭 이벤트 위임 (아코디언 토글 / 듣기 / 복사 / 삭제 / 단어 클릭)
+    // 7. 카드 클릭 이벤트 위임 (아코디언 토글 / 듣기 / 복사 / 수정 / 삭제 / 단어 클릭)
     document.body.addEventListener('click', (e) => {
+      const editBtn = e.target.closest('.edit-btn');
+      if (editBtn) {
+        e.stopPropagation();
+        const card = editBtn.closest('.phrase');
+        if (card) {
+          if (card.dataset.manualId) {
+            openEditModalForManual(card.dataset.manualId);
+          } else if (card.dataset.builtinId) {
+            openEditModalForBuiltin(card, card.dataset.builtinId);
+          }
+        }
+        return;
+      }
+
       const deleteBtn = e.target.closest('.delete-btn');
       if (deleteBtn) {
         e.stopPropagation();
