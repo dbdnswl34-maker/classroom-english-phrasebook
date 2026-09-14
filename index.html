@@ -95,6 +95,39 @@
       box-shadow: var(--shadow-sm);
     }
 
+    /* 넓은 화면에서는 소제목 바로가기를 사이드바로 고정 */
+    @media (min-width: 1180px) {
+      .category-nav {
+        position: fixed;
+        top: 96px;
+        left: 20px;
+        width: 190px;
+        max-height: calc(100vh - 116px);
+        overflow-y: auto;
+        margin-bottom: 0;
+        z-index: 80;
+      }
+
+      .cat-nav-title span {
+        font-size: 0.78rem;
+      }
+
+      .cat-nav-list {
+        flex-direction: column;
+        gap: 0.4rem;
+      }
+
+      .cat-nav-btn {
+        width: 100%;
+      }
+
+      .container {
+        margin-left: 232px;
+        margin-right: auto;
+        max-width: 900px;
+      }
+    }
+
     /* 상단 헤더 */
     header {
       background: linear-gradient(135deg, #1d4ed8 0%, #2563eb 50%, #60a5fa 100%);
@@ -809,8 +842,6 @@
         <a href="#cat-check" class="cat-nav-btn">❓ 8. 학습 확인</a>
         <a href="#cat-wrapup" class="cat-nav-btn">🔔 9. 수업 마무리</a>
         <a href="#cat-digital" class="cat-nav-btn">💻 10. 디지털 도구</a>
-        <a href="#cat-grade4" class="cat-nav-btn">🐥 11. 4학년 전용</a>
-        <a href="#cat-grade6" class="cat-nav-btn">🎓 12. 6학년 전용</a>
         <a href="#cat-tips" class="cat-nav-btn">💡 지도 핵심 팁</a>
       </div>
     </nav>
@@ -2416,168 +2447,6 @@
       </div>
     </section>
 
-    <!-- 11. 4학년 전용 (6) -->
-    <section class="category" id="cat-grade4">
-      <h2 class="category-title">
-        <span>🐥 11. 4학년 전용 교실영어</span>
-        <span class="category-subtitle">4th Grade Targeted · 6개</span>
-      </h2>
-      <div class="phrase-group">
-        <div class="phrase">
-          <div class="en-container">
-            <div class="en">What *time* is it? ↘</div>
-            <div class="action-btns">
-              <button class="action-btn listen-btn" title="원어민 음성 듣기">🔊</button>
-              <button class="action-btn copy-btn" title="문장 복사">📋</button>
-            </div>
-          </div>
-          <div class="pron-panel"><div class="ipa">/wʌt taɪm ɪz ɪt/</div></div>
-          <div class="ko">지금 몇 시인가요?</div>
-        </div>
-
-        <div class="phrase">
-          <div class="en-container">
-            <div class="en">What are you *do*ing? ↘</div>
-            <div class="action-btns">
-              <button class="action-btn listen-btn" title="원어민 음성 듣기">🔊</button>
-              <button class="action-btn copy-btn" title="문장 복사">📋</button>
-            </div>
-          </div>
-          <div class="pron-panel"><div class="ipa">/wʌt ɑːr juː ˈduːɪŋ/</div></div>
-          <div class="ko">지금 무엇을 하고 있나요?</div>
-        </div>
-
-        <div class="phrase">
-          <div class="en-container">
-            <div class="en">Can you *jump*? ↗</div>
-            <div class="action-btns">
-              <button class="action-btn listen-btn" title="원어민 음성 듣기">🔊</button>
-              <button class="action-btn copy-btn" title="문장 복사">📋</button>
-            </div>
-          </div>
-          <div class="pron-panel"><div class="ipa">/kæn juː dʒʌmp/</div></div>
-          <div class="ko">점프할 수 있나요?</div>
-        </div>
-
-        <div class="phrase">
-          <div class="en-container">
-            <div class="en">Whose *pen*cil is this? ↘</div>
-            <div class="action-btns">
-              <button class="action-btn listen-btn" title="원어민 음성 듣기">🔊</button>
-              <button class="action-btn copy-btn" title="문장 복사">📋</button>
-            </div>
-          </div>
-          <div class="pron-panel"><div class="ipa">/huːz ˈpensl ɪz ðɪs/</div></div>
-          <div class="ko">이것은 누구의 연필인가요?</div>
-        </div>
-
-        <div class="phrase">
-          <div class="en-container">
-            <div class="en">Where is the *rest*room? ↘</div>
-            <div class="action-btns">
-              <button class="action-btn listen-btn" title="원어민 음성 듣기">🔊</button>
-              <button class="action-btn copy-btn" title="문장 복사">📋</button>
-            </div>
-          </div>
-          <div class="pron-panel"><div class="ipa">/wer ɪz ðə ˈrestruːm/</div></div>
-          <div class="ko">화장실은 어디에 있나요?</div>
-        </div>
-
-        <div class="phrase">
-          <div class="en-container">
-            <div class="en">How *much* is it? ↘</div>
-            <div class="action-btns">
-              <button class="action-btn listen-btn" title="원어민 음성 듣기">🔊</button>
-              <button class="action-btn copy-btn" title="문장 복사">📋</button>
-            </div>
-          </div>
-          <div class="pron-panel"><div class="ipa">/haʊ mʌtʃ ɪz ɪt/</div></div>
-          <div class="ko">이것은 얼마인가요?</div>
-        </div>
-      </div>
-    </section>
-
-    <!-- 12. 6학년 전용 (6) -->
-    <section class="category" id="cat-grade6">
-      <h2 class="category-title">
-        <span>🎓 12. 6학년 전용 교실영어</span>
-        <span class="category-subtitle">6th Grade Targeted · 6개</span>
-      </h2>
-      <div class="phrase-group">
-        <div class="phrase">
-          <div class="en-container">
-            <div class="en">What grade are you *in*? ↘</div>
-            <div class="action-btns">
-              <button class="action-btn listen-btn" title="원어민 음성 듣기">🔊</button>
-              <button class="action-btn copy-btn" title="문장 복사">📋</button>
-            </div>
-          </div>
-          <div class="pron-panel"><div class="ipa">/wʌt ɡreɪd ɑːr juː ɪn/</div></div>
-          <div class="ko">몇 학년인가요?</div>
-        </div>
-
-        <div class="phrase">
-          <div class="en-container">
-            <div class="en">What is your *fa*vorite subject? ↘</div>
-            <div class="action-btns">
-              <button class="action-btn listen-btn" title="원어민 음성 듣기">🔊</button>
-              <button class="action-btn copy-btn" title="문장 복사">📋</button>
-            </div>
-          </div>
-          <div class="pron-panel"><div class="ipa">/wʌt ɪz jʊər ˈfeɪvərɪt ˈsʌbdʒekt/</div></div>
-          <div class="ko">가장 좋아하는 과목은 무엇인가요?</div>
-        </div>
-
-        <div class="phrase">
-          <div class="en-container">
-            <div class="en">Why were you *late*? ↘</div>
-            <div class="action-btns">
-              <button class="action-btn listen-btn" title="원어민 음성 듣기">🔊</button>
-              <button class="action-btn copy-btn" title="문장 복사">📋</button>
-            </div>
-          </div>
-          <div class="pron-panel"><div class="ipa">/waɪ wɜːr juː leɪt/</div></div>
-          <div class="ko">왜 늦었나요?</div>
-        </div>
-
-        <div class="phrase">
-          <div class="en-container">
-            <div class="en">What should we *do* to save energy? ↘</div>
-            <div class="action-btns">
-              <button class="action-btn listen-btn" title="원어민 음성 듣기">🔊</button>
-              <button class="action-btn copy-btn" title="문장 복사">📋</button>
-            </div>
-          </div>
-          <div class="pron-panel"><div class="ipa">/wʌt ʃʊd wiː duː tu seɪv ˈenərdʒi/</div></div>
-          <div class="ko">에너지를 절약하기 위해 무엇을 해야 할까요?</div>
-        </div>
-
-        <div class="phrase">
-          <div class="en-container">
-            <div class="en">How *of*ten do you ex*er*cise? ↘</div>
-            <div class="action-btns">
-              <button class="action-btn listen-btn" title="원어민 음성 듣기">🔊</button>
-              <button class="action-btn copy-btn" title="문장 복사">📋</button>
-            </div>
-          </div>
-          <div class="pron-panel"><div class="ipa">/haʊ ˈɔːfn duː juː ˈeksərsaɪz/</div></div>
-          <div class="ko">얼마나 자주 운동을 하나요?</div>
-        </div>
-
-        <div class="phrase">
-          <div class="en-container">
-            <div class="en">What do you want to *be* in the *fu*ture? ↘</div>
-            <div class="action-btns">
-              <button class="action-btn listen-btn" title="원어민 음성 듣기">🔊</button>
-              <button class="action-btn copy-btn" title="문장 복사">📋</button>
-            </div>
-          </div>
-          <div class="pron-panel"><div class="ipa">/wʌt duː juː wɑːnt tu biː ɪn ðə ˈfjuːtʃər/</div></div>
-          <div class="ko">장래에 무엇이 되고 싶나요?</div>
-        </div>
-      </div>
-    </section>
-
     <!-- 13. 지도 핵심 팁 -->
     <section class="category" id="cat-tips">
       <h2 class="category-title">
@@ -2645,9 +2514,9 @@
           <select id="apCategory" required></select>
         </div>
         <div class="form-field">
-          <label for="apEnglish">영어 문장</label>
-          <input type="text" id="apEnglish" placeholder="예: *Close* the *door*, please. ↘" required>
-          <div class="form-hint">강세를 줄 단어는 *단어*로 감싸고, 문장 끝에 ↘(하강) 또는 ↗(상승)를 붙여주세요.</div>
+          <label for="apEnglish">영어 문장 (선택)</label>
+          <input type="text" id="apEnglish" placeholder="예: Close the door, please.">
+          <div class="form-hint">그냥 평문으로 입력하면 강세(*)와 억양(↘/↗)이 자동으로 표시돼요. 직접 *단어*와 ↘/↗를 넣으면 그대로 사용됩니다.</div>
         </div>
         <div class="form-field">
           <label for="apIpa">발음기호 (IPA, 선택)</label>
@@ -2655,8 +2524,9 @@
           <div class="form-hint">비워두면 단어별로 자동 조회해서 채워드려요 (일부 단어는 못 찾을 수 있어요).</div>
         </div>
         <div class="form-field">
-          <label for="apKorean">한글 뜻</label>
-          <input type="text" id="apKorean" placeholder="예: 문 닫아 주세요." required>
+          <label for="apKorean">한글 뜻 (선택)</label>
+          <input type="text" id="apKorean" placeholder="예: 문 닫아 주세요.">
+          <div class="form-hint">영어 문장과 한글 뜻 중 하나만 입력하면 나머지는 자동 번역으로 채워드려요.</div>
         </div>
         <div class="form-field">
           <label for="apNote">지도 팁 / 참고 메모 (선택)</label>
@@ -2843,6 +2713,54 @@
       saveManualPhrases(loadManualPhrases().filter(item => item.id !== id));
     }
 
+    // 8. 기존(built-in) 문장에도 삭제 버튼 추가 + 삭제 상태 저장
+    const HIDDEN_BUILTIN_KEY = 'hiddenBuiltinPhrases';
+
+    function loadHiddenBuiltinIds() {
+      try {
+        return new Set(JSON.parse(localStorage.getItem(HIDDEN_BUILTIN_KEY) || '[]'));
+      } catch (e) {
+        return new Set();
+      }
+    }
+
+    function hideBuiltinPhrase(id) {
+      const set = loadHiddenBuiltinIds();
+      set.add(id);
+      try {
+        localStorage.setItem(HIDDEN_BUILTIN_KEY, JSON.stringify(Array.from(set)));
+      } catch (e) {}
+    }
+
+    function ensureDeleteButton(card) {
+      const btns = card.querySelector('.action-btns');
+      if (!btns || btns.querySelector('.delete-btn')) return;
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'action-btn delete-btn';
+      btn.title = '삭제';
+      btn.textContent = '🗑️';
+      btns.appendChild(btn);
+    }
+
+    function initBuiltinPhrases() {
+      const hidden = loadHiddenBuiltinIds();
+      document.querySelectorAll('.category').forEach(cat => {
+        if (cat.id === 'cat-tips') return;
+        const phrases = cat.querySelectorAll('.phrase');
+        phrases.forEach((card, idx) => {
+          if (card.dataset.manualId) return;
+          const builtinId = cat.id + '-' + idx;
+          card.dataset.builtinId = builtinId;
+          if (hidden.has(builtinId)) {
+            card.remove();
+            return;
+          }
+          ensureDeleteButton(card);
+        });
+      });
+    }
+
     const addPhraseModal = document.getElementById('addPhraseModal');
     const openAddPhraseBtn = document.getElementById('openAddPhraseBtn');
     const addModalCloseBtn = document.getElementById('addModalCloseBtn');
@@ -2900,29 +2818,112 @@
       return '/' + parts.join(' ') + '/';
     }
 
+    // 자동 번역: 무료 번역 API(MyMemory)로 영어↔한글 자동 채움
+    async function translateText(text, langpair) {
+      try {
+        const res = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=${langpair}`);
+        if (!res.ok) return null;
+        const data = await res.json();
+        const translated = data && data.responseData && data.responseData.translatedText;
+        return translated ? translated.trim() : null;
+      } catch (err) {
+        return null;
+      }
+    }
+
+    // 자동 강세(*단어*) 및 억양(↘/↗) 표시 (이미 *나 ↘/↗가 있으면 건드리지 않음)
+    const FUNCTION_WORDS = new Set([
+      'a', 'an', 'the',
+      'is', 'am', 'are', 'was', 'were', 'be', 'been', 'being',
+      'do', 'does', 'did', 'done', 'doing',
+      'have', 'has', 'had', 'having',
+      'will', 'would', 'shall', 'should', 'can', 'could', 'may', 'might', 'must',
+      "isn't", "aren't", "wasn't", "weren't", "don't", "doesn't", "didn't",
+      "haven't", "hasn't", "hadn't", "won't", "wouldn't", "shouldn't", "can't", "couldn't", "mustn't",
+      'to', 'of', 'in', 'on', 'at', 'by', 'for', 'with', 'from', 'into', 'onto', 'about', 'as', 'than', 'then',
+      'and', 'but', 'or', 'nor', 'so', 'if', 'because', 'that', 'this', 'these', 'those',
+      'i', 'you', 'he', 'she', 'it', 'we', 'they', 'me', 'him', 'her', 'us', 'them',
+      'my', 'your', 'his', 'its', 'our', 'their',
+      'please', 'not', 'there',
+      "let's", "it's", "that's", "there's", "i'm", "you're", "we're", "they're"
+    ]);
+    const YES_NO_STARTERS = new Set(['am', 'is', 'are', 'was', 'were', 'do', 'does', 'did', 'can', 'could', 'will', 'would', 'shall', 'should', 'may', 'might', 'must', 'have', 'has', 'had']);
+    const WH_WORDS = new Set(['what', 'where', 'when', 'why', 'how', 'who', 'whom', 'whose', 'which']);
+
+    function autoMarkStressAndIntonation(rawText) {
+      const t = rawText.trim();
+      if (!t) return t;
+
+      const endsWithQuestion = /\?\s*$/.test(t);
+      const firstWordMatch = t.match(/[A-Za-z']+/);
+      const firstWord = firstWordMatch ? firstWordMatch[0].toLowerCase() : '';
+
+      let arrow;
+      if (endsWithQuestion) {
+        arrow = WH_WORDS.has(firstWord) ? '↘' : '↗';
+      } else {
+        arrow = '↘';
+      }
+
+      const marked = t.replace(/[A-Za-z']+/g, (word) => {
+        const lower = word.toLowerCase();
+        return FUNCTION_WORDS.has(lower) ? word : `*${word}*`;
+      });
+
+      return `${marked} ${arrow}`;
+    }
+
     addPhraseForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       const categoryId = document.getElementById('apCategory').value;
-      const en = document.getElementById('apEnglish').value.trim();
+      let en = document.getElementById('apEnglish').value.trim();
       let ipa = document.getElementById('apIpa').value.trim();
-      const ko = document.getElementById('apKorean').value.trim();
+      let ko = document.getElementById('apKorean').value.trim();
       const note = document.getElementById('apNote').value.trim();
-      if (!en || !ko) return;
+
+      if (!en && !ko) {
+        showToast('⚠️ 영어 문장 또는 한글 뜻 중 하나는 입력해 주세요.');
+        return;
+      }
 
       const submitBtn = addPhraseForm.querySelector('button[type="submit"]');
       const originalBtnText = submitBtn.textContent;
+      submitBtn.disabled = true;
 
-      if (!ipa) {
-        submitBtn.disabled = true;
-        submitBtn.textContent = '발음기호 조회 중...';
-        try {
-          ipa = await autoGenerateIpa(en);
-        } catch (err) {
-          ipa = '';
+      try {
+        if (!en) {
+          submitBtn.textContent = '영어 번역 중...';
+          const translated = await translateText(ko, 'ko|en');
+          if (!translated) {
+            showToast('⚠️ 자동 번역에 실패했습니다. 영어 문장을 직접 입력해 주세요.');
+            submitBtn.disabled = false;
+            submitBtn.textContent = originalBtnText;
+            return;
+          }
+          en = translated;
         }
-        submitBtn.disabled = false;
-        submitBtn.textContent = originalBtnText;
+
+        if (!/[\*↘↗]/.test(en)) {
+          en = autoMarkStressAndIntonation(en);
+        }
+
+        if (!ko) {
+          submitBtn.textContent = '한글 번역 중...';
+          const plainEn = en.replace(/[\*↘↗]/g, '').trim();
+          const translatedKo = await translateText(plainEn, 'en|ko');
+          if (translatedKo) ko = translatedKo;
+        }
+
+        if (!ipa) {
+          submitBtn.textContent = '발음기호 조회 중...';
+          ipa = await autoGenerateIpa(en);
+        }
+      } catch (err) {
+        // 자동화 중 일부가 실패해도 입력된 내용으로 계속 진행
       }
+
+      submitBtn.disabled = false;
+      submitBtn.textContent = originalBtnText;
 
       const data = {
         id: 'manual-' + Date.now() + '-' + Math.random().toString(36).slice(2, 7),
@@ -2962,8 +2963,12 @@
       if (deleteBtn) {
         e.stopPropagation();
         const card = deleteBtn.closest('.phrase');
-        if (card && card.dataset.manualId) {
-          deleteManualPhrase(card.dataset.manualId);
+        if (card) {
+          if (card.dataset.manualId) {
+            deleteManualPhrase(card.dataset.manualId);
+          } else if (card.dataset.builtinId) {
+            hideBuiltinPhrase(card.dataset.builtinId);
+          }
           card.remove();
           showToast('🗑️ 문장이 삭제되었습니다.');
         }
@@ -3007,6 +3012,7 @@
 
     // DOM 완료 후 초기화
     document.addEventListener('DOMContentLoaded', () => {
+      initBuiltinPhrases();
       wrapWords();
       renderStoredManualPhrases();
 
