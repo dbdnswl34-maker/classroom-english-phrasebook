@@ -99,7 +99,7 @@
     header {
       background: linear-gradient(135deg, #1d4ed8 0%, #2563eb 50%, #60a5fa 100%);
       color: white;
-      padding: 2.2rem 1.5rem 2rem;
+      padding: 1.35rem 1.5rem 1.15rem;
       text-align: center;
       box-shadow: 0 4px 16px rgba(37, 99, 235, 0.18);
       position: sticky;
@@ -113,20 +113,20 @@
       gap: 0.4rem;
       background: rgba(255, 255, 255, 0.22);
       border: 1px solid rgba(255, 255, 255, 0.45);
-      padding: 5px 16px;
+      padding: 4px 14px;
       border-radius: 9999px;
-      font-size: 0.82rem;
+      font-size: 0.74rem;
       font-weight: 700;
-      margin-bottom: 0.65rem;
+      margin-bottom: 0.45rem;
       backdrop-filter: blur(8px);
       letter-spacing: 0.02em;
     }
 
     header h1 {
-      font-size: 1.95rem;
+      font-size: 1.5rem;
       font-weight: 800;
       letter-spacing: -0.02em;
-      margin-bottom: 0.45rem;
+      margin-bottom: 0.3rem;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -134,25 +134,68 @@
     }
 
     header p {
-      font-size: 0.95rem;
+      font-size: clamp(0.64rem, 1.5vw, 0.88rem);
       opacity: 0.95;
-      max-width: 760px;
+      max-width: 100%;
       margin: 0 auto;
-      line-height: 1.55;
+      line-height: 1.4;
+      white-space: nowrap;
+    }
+
+    @media (max-width: 768px) {
+      header p {
+        white-space: normal;
+        font-size: 0.8rem;
+      }
     }
 
     /* 범례 안내 바 */
     .guide-bar {
       background: #ffffff;
       border-bottom: 1px solid var(--border-color);
-      padding: 0.8rem 1rem;
+      padding: 0.6rem 1rem;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 0.7rem;
+      font-size: 0.84rem;
+      color: var(--text-muted);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03);
+    }
+
+    .guide-toggle-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      background: #f1f5f9;
+      border: 1px solid var(--border-color);
+      border-radius: 9999px;
+      padding: 0.3rem 0.75rem;
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: #475569;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      flex-shrink: 0;
+    }
+
+    .guide-toggle-btn:hover {
+      background: var(--primary-soft);
+      color: var(--primary);
+      border-color: #93c5fd;
+    }
+
+    .guide-items {
       display: flex;
       justify-content: center;
       flex-wrap: wrap;
       gap: 1.2rem;
-      font-size: 0.84rem;
-      color: var(--text-muted);
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03);
+      flex: 1;
+    }
+
+    .guide-items.collapsed {
+      display: none;
     }
 
     .guide-item {
@@ -596,6 +639,137 @@
       border-color: #93c5fd;
       color: var(--primary);
     }
+
+    /* 문장 직접 추가 */
+    .add-phrase-row {
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: 1.4rem;
+    }
+
+    .add-phrase-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      padding: 0.65rem 1.1rem;
+      font-size: 0.88rem;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: var(--shadow-sm);
+      transition: all 0.18s ease;
+    }
+
+    .add-phrase-btn:hover {
+      background: var(--primary-hover);
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .modal-card.wide {
+      max-width: 480px;
+    }
+
+    .form-field {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      margin-bottom: 0.9rem;
+    }
+
+    .form-field label {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: #334155;
+    }
+
+    .form-field input,
+    .form-field select,
+    .form-field textarea {
+      padding: 0.6rem 0.75rem;
+      border-radius: 10px;
+      border: 1.5px solid var(--border-color);
+      font-family: inherit;
+      font-size: 0.9rem;
+      color: var(--text-main);
+      outline: none;
+      resize: vertical;
+    }
+
+    .form-field input:focus,
+    .form-field select:focus,
+    .form-field textarea:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+    }
+
+    .form-hint {
+      font-size: 0.76rem;
+      color: var(--text-muted);
+      margin-top: -0.2rem;
+    }
+
+    .modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 0.6rem;
+      margin-top: 1.2rem;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      padding: 0.6rem 1.2rem;
+      font-weight: 700;
+      font-size: 0.88rem;
+      cursor: pointer;
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-hover);
+    }
+
+    .btn-secondary {
+      background: #f1f5f9;
+      color: #475569;
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 0.6rem 1.2rem;
+      font-weight: 700;
+      font-size: 0.88rem;
+      cursor: pointer;
+    }
+
+    .btn-secondary:hover {
+      background: #e2e8f0;
+    }
+
+    .delete-btn {
+      color: #dc2626;
+    }
+
+    .delete-btn:hover {
+      background: #dc2626;
+      color: white;
+      border-color: #dc2626;
+    }
+
+    .manual-tag {
+      display: inline-block;
+      font-size: 0.68rem;
+      font-weight: 800;
+      color: #7c3aed;
+      background: #ede9fe;
+      padding: 1px 7px;
+      border-radius: 6px;
+      margin-left: 6px;
+      vertical-align: middle;
+    }
   </style>
 </head>
 <body>
@@ -607,12 +781,15 @@
   </header>
 
   <div class="guide-bar">
-    <span class="guide-item"><span class="badge-icon" style="color:#e11d48; text-decoration:underline;">강세음절</span> 핵심 내용어 강조</span>
-    <span class="guide-item"><span class="badge-icon" style="color:#0284c7;">↘ 하강조</span> 평서·명령·의문사질문</span>
-    <span class="guide-item"><span class="badge-icon" style="color:#0284c7;">↗ 상승조</span> Yes/No 질문·확인요청</span>
-    <span class="guide-item"><span class="badge-icon" style="color:#6366f1;">/.../</span> 국제음성기호(IPA)</span>
-    <span class="guide-item"><span class="badge-icon">🔤</span> 단어 누르면 영한사전</span>
-    <span class="guide-item"><span class="badge-icon">🔊</span> 문장 누르면 음성 재생</span>
+    <button type="button" class="guide-toggle-btn" id="guideToggleBtn">📖 범례 <span id="guideToggleIcon">▲</span></button>
+    <div class="guide-items" id="guideItems">
+      <span class="guide-item"><span class="badge-icon" style="color:#e11d48; text-decoration:underline;">강세음절</span> 핵심 내용어 강조</span>
+      <span class="guide-item"><span class="badge-icon" style="color:#0284c7;">↘ 하강조</span> 평서·명령·의문사질문</span>
+      <span class="guide-item"><span class="badge-icon" style="color:#0284c7;">↗ 상승조</span> Yes/No 질문·확인요청</span>
+      <span class="guide-item"><span class="badge-icon" style="color:#6366f1;">/.../</span> 국제음성기호(IPA)</span>
+      <span class="guide-item"><span class="badge-icon">🔤</span> 단어 누르면 영한사전</span>
+      <span class="guide-item"><span class="badge-icon">🔊</span> 문장 누르면 음성 재생</span>
+    </div>
   </div>
 
   <main class="container">
@@ -642,6 +819,11 @@
     <div class="search-wrapper">
       <span class="search-icon">🔍</span>
       <input type="text" id="searchInput" class="search-input" placeholder="영어 표현, 한글 번역, 키워드 검색 (예: homework, group, page, 앉아, 숙제)...">
+    </div>
+
+    <!-- 문장 직접 추가 버튼 -->
+    <div class="add-phrase-row">
+      <button type="button" id="openAddPhraseBtn" class="add-phrase-btn">➕ 문장 직접 추가하기</button>
     </div>
 
     <!-- 1. 인사 & 수업 시작 (11) -->
@@ -2450,39 +2632,78 @@
     </div>
   </div>
 
+  <!-- 문장 직접 추가 모달 -->
+  <div id="addPhraseModal" class="modal-backdrop">
+    <div class="modal-card wide">
+      <div class="modal-header">
+        <div class="modal-title">✏️ 문장 추가</div>
+        <button class="modal-close" id="addModalCloseBtn">&times;</button>
+      </div>
+      <form id="addPhraseForm">
+        <div class="form-field">
+          <label for="apCategory">카테고리</label>
+          <select id="apCategory" required></select>
+        </div>
+        <div class="form-field">
+          <label for="apEnglish">영어 문장</label>
+          <input type="text" id="apEnglish" placeholder="예: *Close* the *door*, please. ↘" required>
+          <div class="form-hint">강세를 줄 단어는 *단어*로 감싸고, 문장 끝에 ↘(하강) 또는 ↗(상승)를 붙여주세요.</div>
+        </div>
+        <div class="form-field">
+          <label for="apIpa">발음기호 (IPA, 선택)</label>
+          <input type="text" id="apIpa" placeholder="예: /kloʊz ðə dɔːr pliːz/">
+        </div>
+        <div class="form-field">
+          <label for="apKorean">한글 뜻</label>
+          <input type="text" id="apKorean" placeholder="예: 문 닫아 주세요." required>
+        </div>
+        <div class="form-field">
+          <label for="apNote">지도 팁 / 참고 메모 (선택)</label>
+          <textarea id="apNote" rows="2" placeholder="예: 구동사 강세 팁 등"></textarea>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn-secondary" id="addModalCancelBtn">취소</button>
+          <button type="submit" class="btn-primary">추가하기</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <script>
     // 1. 단어 개별 Wrap 처리 (강세 및 클릭 이벤트 연동)
-    function wrapWords() {
-      document.querySelectorAll('.en').forEach(el => {
-        let content = el.innerHTML.replace(/\*(.*?)\*/g, '<span class="stress">$1</span>');
+    function applyStressAndWords(el) {
+      let content = el.innerHTML.replace(/\*(.*?)\*/g, '<span class="stress">$1</span>');
 
-        const tempDiv = document.createElement('div');
-        tempDiv.innerHTML = content;
+      const tempDiv = document.createElement('div');
+      tempDiv.innerHTML = content;
 
-        function processNode(node) {
-          if (node.nodeType === Node.TEXT_NODE) {
-            const text = node.textContent;
-            const parts = text.split(/([a-zA-Z]+)/);
-            const fragment = document.createDocumentFragment();
-            parts.forEach(part => {
-              if (/^[a-zA-Z]+$/.test(part)) {
-                const span = document.createElement('span');
-                span.className = 'word';
-                span.textContent = part;
-                fragment.appendChild(span);
-              } else {
-                fragment.appendChild(document.createTextNode(part));
-              }
-            });
-            node.parentNode.replaceChild(fragment, node);
-          } else if (node.nodeType === Node.ELEMENT_NODE) {
-            Array.from(node.childNodes).forEach(processNode);
-          }
+      function processNode(node) {
+        if (node.nodeType === Node.TEXT_NODE) {
+          const text = node.textContent;
+          const parts = text.split(/([a-zA-Z]+)/);
+          const fragment = document.createDocumentFragment();
+          parts.forEach(part => {
+            if (/^[a-zA-Z]+$/.test(part)) {
+              const span = document.createElement('span');
+              span.className = 'word';
+              span.textContent = part;
+              fragment.appendChild(span);
+            } else {
+              fragment.appendChild(document.createTextNode(part));
+            }
+          });
+          node.parentNode.replaceChild(fragment, node);
+        } else if (node.nodeType === Node.ELEMENT_NODE) {
+          Array.from(node.childNodes).forEach(processNode);
         }
+      }
 
-        Array.from(tempDiv.childNodes).forEach(processNode);
-        el.innerHTML = tempDiv.innerHTML;
-      });
+      Array.from(tempDiv.childNodes).forEach(processNode);
+      el.innerHTML = tempDiv.innerHTML;
+    }
+
+    function wrapWords() {
+      document.querySelectorAll('.en').forEach(applyStressAndWords);
     }
 
     // 2. TTS 음성 재생
@@ -2535,50 +2756,213 @@
       }
     });
 
-    // DOM 완료 후 이벤트 바인딩
+    // 5. 문장 직접 추가 / 삭제 (localStorage에 저장되어 새로고침 후에도 유지)
+    const STORAGE_KEY = 'manualPhrases';
+
+    function loadManualPhrases() {
+      try {
+        return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+      } catch (e) {
+        return [];
+      }
+    }
+
+    function saveManualPhrases(list) {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
+      } catch (e) {}
+    }
+
+    function escapeHtml(str) {
+      return (str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+
+    function buildPhraseCard(data) {
+      const card = document.createElement('div');
+      card.className = 'phrase';
+      card.dataset.manualId = data.id;
+
+      const enHtml = escapeHtml(data.en);
+      const ipaHtml = escapeHtml(data.ipa);
+      const koHtml = escapeHtml(data.ko);
+      const noteHtml = escapeHtml(data.note);
+
+      card.innerHTML = `
+        <div class="en-container">
+          <div class="en">${enHtml}<span class="manual-tag">직접추가</span></div>
+          <div class="action-btns">
+            <button class="action-btn listen-btn" title="원어민 음성 듣기">🔊</button>
+            <button class="action-btn copy-btn" title="문장 복사">📋</button>
+            <button class="action-btn delete-btn" title="삭제">🗑️</button>
+          </div>
+        </div>
+        ${ipaHtml ? `<div class="pron-panel"><div class="ipa">${ipaHtml}</div></div>` : ''}
+        ${koHtml ? `<div class="ko">${koHtml}</div>` : ''}
+        ${noteHtml ? `<div class="note">💡 ${noteHtml}</div>` : ''}
+      `;
+
+      applyStressAndWords(card.querySelector('.en'));
+      return card;
+    }
+
+    function addPhraseToDOM(categoryId, data) {
+      const category = document.getElementById(categoryId);
+      if (!category) return;
+      const groups = category.querySelectorAll('.phrase-group');
+      let group = groups[groups.length - 1];
+      if (!group) {
+        group = document.createElement('div');
+        group.className = 'phrase-group';
+        category.appendChild(group);
+      }
+      const card = buildPhraseCard(data);
+      group.appendChild(card);
+      return card;
+    }
+
+    function populateCategorySelect() {
+      const select = document.getElementById('apCategory');
+      const categories = document.querySelectorAll('.category');
+      select.innerHTML = '';
+      categories.forEach(cat => {
+        if (cat.id === 'cat-tips') return;
+        const titleSpan = cat.querySelector('.category-title > span:first-child');
+        const option = document.createElement('option');
+        option.value = cat.id;
+        option.textContent = titleSpan ? titleSpan.textContent.trim() : cat.id;
+        select.appendChild(option);
+      });
+    }
+
+    function renderStoredManualPhrases() {
+      loadManualPhrases().forEach(item => addPhraseToDOM(item.categoryId, item));
+    }
+
+    function deleteManualPhrase(id) {
+      saveManualPhrases(loadManualPhrases().filter(item => item.id !== id));
+    }
+
+    const addPhraseModal = document.getElementById('addPhraseModal');
+    const openAddPhraseBtn = document.getElementById('openAddPhraseBtn');
+    const addModalCloseBtn = document.getElementById('addModalCloseBtn');
+    const addModalCancelBtn = document.getElementById('addModalCancelBtn');
+    const addPhraseForm = document.getElementById('addPhraseForm');
+
+    function closeAddModal() {
+      addPhraseModal.classList.remove('show');
+      addPhraseForm.reset();
+    }
+
+    openAddPhraseBtn.addEventListener('click', () => {
+      populateCategorySelect();
+      addPhraseModal.classList.add('show');
+    });
+    addModalCloseBtn.addEventListener('click', closeAddModal);
+    addModalCancelBtn.addEventListener('click', closeAddModal);
+    addPhraseModal.addEventListener('click', (e) => {
+      if (e.target === addPhraseModal) closeAddModal();
+    });
+
+    addPhraseForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const categoryId = document.getElementById('apCategory').value;
+      const en = document.getElementById('apEnglish').value.trim();
+      const ipa = document.getElementById('apIpa').value.trim();
+      const ko = document.getElementById('apKorean').value.trim();
+      const note = document.getElementById('apNote').value.trim();
+      if (!en || !ko) return;
+
+      const data = {
+        id: 'manual-' + Date.now() + '-' + Math.random().toString(36).slice(2, 7),
+        categoryId, en, ipa, ko, note
+      };
+
+      const list = loadManualPhrases();
+      list.push(data);
+      saveManualPhrases(list);
+
+      addPhraseToDOM(categoryId, data);
+      closeAddModal();
+      showToast('✅ 문장이 추가되었습니다!');
+    });
+
+    // 6. 범례 바 접기/펼치기
+    const guideToggleBtn = document.getElementById('guideToggleBtn');
+    const guideItems = document.getElementById('guideItems');
+    const guideToggleIcon = document.getElementById('guideToggleIcon');
+    const GUIDE_COLLAPSE_KEY = 'guideBarCollapsed';
+
+    function setGuideCollapsed(collapsed) {
+      guideItems.classList.toggle('collapsed', collapsed);
+      guideToggleIcon.textContent = collapsed ? '▼' : '▲';
+      try {
+        localStorage.setItem(GUIDE_COLLAPSE_KEY, collapsed ? '1' : '0');
+      } catch (e) {}
+    }
+
+    guideToggleBtn.addEventListener('click', () => {
+      setGuideCollapsed(!guideItems.classList.contains('collapsed'));
+    });
+
+    // 7. 카드 클릭 이벤트 위임 (아코디언 토글 / 듣기 / 복사 / 삭제 / 단어 클릭)
+    document.body.addEventListener('click', (e) => {
+      const deleteBtn = e.target.closest('.delete-btn');
+      if (deleteBtn) {
+        e.stopPropagation();
+        const card = deleteBtn.closest('.phrase');
+        if (card && card.dataset.manualId) {
+          deleteManualPhrase(card.dataset.manualId);
+          card.remove();
+          showToast('🗑️ 문장이 삭제되었습니다.');
+        }
+        return;
+      }
+
+      const listenBtn = e.target.closest('.listen-btn');
+      if (listenBtn) {
+        e.stopPropagation();
+        const card = listenBtn.closest('.phrase');
+        const enText = card.querySelector('.en').textContent;
+        speakText(enText);
+        return;
+      }
+
+      const copyBtn = e.target.closest('.copy-btn');
+      if (copyBtn) {
+        e.stopPropagation();
+        const card = copyBtn.closest('.phrase');
+        const enText = card.querySelector('.en').textContent
+          .replace(/[\*↘↗]/g, '')
+          .trim();
+        navigator.clipboard.writeText(enText).then(() => {
+          showToast('📋 문장이 클립보드에 복사되었습니다!');
+        });
+        return;
+      }
+
+      if (e.target.classList.contains('word')) {
+        e.stopPropagation();
+        const rawWord = e.target.textContent.replace(/[^a-zA-Z]/g, '');
+        if (rawWord) openDictModal(rawWord);
+        return;
+      }
+
+      const card = e.target.closest('.phrase');
+      if (card) {
+        card.classList.toggle('active');
+      }
+    });
+
+    // DOM 완료 후 초기화
     document.addEventListener('DOMContentLoaded', () => {
       wrapWords();
+      renderStoredManualPhrases();
 
-      // 카드의 아코디언 토글
-      document.querySelectorAll('.phrase').forEach(card => {
-        card.addEventListener('click', (e) => {
-          if (e.target.closest('.action-btn') || e.target.classList.contains('word')) return;
-          card.classList.toggle('active');
-        });
-      });
-
-      // 듣기 버튼
-      document.querySelectorAll('.listen-btn').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-          e.stopPropagation();
-          const card = btn.closest('.phrase');
-          const enText = card.querySelector('.en').textContent;
-          speakText(enText);
-        });
-      });
-
-      // 복사 버튼
-      document.querySelectorAll('.copy-btn').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-          e.stopPropagation();
-          const card = btn.closest('.phrase');
-          const enText = card.querySelector('.en').textContent
-            .replace(/[\*↘↗]/g, '')
-            .trim();
-          navigator.clipboard.writeText(enText).then(() => {
-            showToast('📋 문장이 클립보드에 복사되었습니다!');
-          });
-        });
-      });
-
-      // 단어 클릭
-      document.body.addEventListener('click', (e) => {
-        if (e.target.classList.contains('word')) {
-          e.stopPropagation();
-          const rawWord = e.target.textContent.replace(/[^a-zA-Z]/g, '');
-          if (rawWord) openDictModal(rawWord);
-        }
-      });
+      let initialCollapsed = false;
+      try {
+        initialCollapsed = localStorage.getItem(GUIDE_COLLAPSE_KEY) === '1';
+      } catch (e) {}
+      setGuideCollapsed(initialCollapsed);
 
       // 검색 기능
       const searchInput = document.getElementById('searchInput');
