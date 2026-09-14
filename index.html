@@ -338,6 +338,11 @@
       margin-bottom: 1rem;
     }
 
+    /* 홀수 개수일 때 마지막 카드는 자동으로 한 줄 전체를 차지 (문장이 추가/삭제되어도 자동 반영) */
+    .phrase-group > .phrase:last-child:nth-child(odd) {
+      grid-column: 1 / -1;
+    }
+
     @media (max-width: 768px) {
       .phrase-group {
         grid-template-columns: 1fr;
@@ -999,7 +1004,7 @@
           <div class="note">💡 <strong>교실영어 지도 팁 (Yes/No 의문문 억양):</strong> Be동사 의문문이므로 끝을 확실히 올려 읽습니다(↗).</div>
         </div>
 
-        <div class="phrase" style="grid-column: 1 / -1;">
+        <div class="phrase">
           <div class="en-container">
             <div class="en">Let's be*gin* our *Eng*lish *class*. ↘</div>
             <div class="action-btns">
@@ -1047,7 +1052,7 @@
           <div class="note">💡 <strong>의문사 강세:</strong> 의문사 Who와 형용사 absent의 1음절(ab-)에 강세가 들어가며 의문사 질문이므로 끝은 하강(↘)합니다.</div>
         </div>
 
-        <div class="phrase" style="grid-column: 1 / -1;">
+        <div class="phrase">
           <div class="en-container">
             <div class="en">Is *ev*eryone *here*? ↗</div>
             <div class="action-btns">
@@ -1151,7 +1156,7 @@
 
       <div class="phrase-subgroup-title">🎒 교재 꺼내기 및 정리 패턴</div>
       <div class="phrase-group">
-        <div class="phrase" style="grid-column: 1 / -1;">
+        <div class="phrase">
           <div class="en-container">
             <div class="en">Take *out* your *work*book. ↘</div>
             <div class="action-btns">
@@ -1296,7 +1301,7 @@
           <div class="ko">지난 시간에 봤던 영상 다시 한 번 더 보겠습니다.</div>
         </div>
 
-        <div class="phrase" style="grid-column: 1 / -1;">
+        <div class="phrase">
           <div class="en-container">
             <div class="en">Should we *lis*ten one more *time*? ↗ Or is that o*kay*? ↘</div>
             <div class="action-btns">
@@ -1489,7 +1494,7 @@
           <div class="ko">다 했으면 엎드리세요.</div>
         </div>
 
-        <div class="phrase" style="grid-column: 1 / -1;">
+        <div class="phrase">
           <div class="en-container">
             <div class="en">*Fin*ish it during *break* time. ↘</div>
             <div class="action-btns">
@@ -1607,7 +1612,7 @@
           2. 14(fourteen)는 뒤 음절인 <strong>-teen</strong>에 강세가 들어갑니다. (1음절에 주면 40인 forty로 오인될 수 있습니다.)</div>
         </div>
 
-        <div class="phrase" style="grid-column: 1 / -1;">
+        <div class="phrase">
           <div class="en-container">
             <div class="en">*Draw* what Hana *made* for her *mom*. ↘</div>
             <div class="action-btns">
@@ -1858,7 +1863,7 @@
           <div class="ko">교실에서 뛰지 않아요.</div>
         </div>
 
-        <div class="phrase" style="grid-column: 1 / -1;">
+        <div class="phrase">
           <div class="en-container">
             <div class="en">Class *pres*ident, check if everything is *ti*dy. ↘</div>
             <div class="action-btns">
@@ -2009,7 +2014,7 @@
           <div class="ko">함께 답을 확인해 볼까요.</div>
         </div>
 
-        <div class="phrase" style="grid-column: 1 / -1;">
+        <div class="phrase">
           <div class="en-container">
             <div class="en">Which team *won*? ↘</div>
             <div class="action-btns">
@@ -2305,7 +2310,7 @@
           <div class="note">💡 <strong>의문사 억양:</strong> What 의문문으로 끝을 내립니다(↘). doing과 beach에 강세가 들어갑니다.</div>
         </div>
 
-        <div class="phrase" style="grid-column: 1 / -1;">
+        <div class="phrase">
           <div class="en-container">
             <div class="en">Who would like to pre*sent*? ↘</div>
             <div class="action-btns">
@@ -2433,7 +2438,7 @@
           <div class="note">💡 <strong>음절 강세:</strong> submit은 2음절인 <strong>-mit</strong>에 강세가 놓입니다.</div>
         </div>
 
-        <div class="phrase" style="grid-column: 1 / -1;">
+        <div class="phrase">
           <div class="en-container">
             <div class="en">Put the tablets back into the *charg*ing cart. ↘</div>
             <div class="action-btns">
@@ -2512,6 +2517,11 @@
         <div class="form-field">
           <label for="apCategory">카테고리</label>
           <select id="apCategory" required></select>
+        </div>
+        <div class="form-field">
+          <label for="apSubgroup">세부 분류 (선택)</label>
+          <select id="apSubgroup"></select>
+          <div class="form-hint">관련 있는 문장들 가까이에 추가됩니다.</div>
         </div>
         <div class="form-field">
           <label for="apEnglish">영어 문장 (선택)</label>
@@ -2660,7 +2670,10 @@
 
       card.innerHTML = `
         <div class="en-container">
-          <div class="en">${enHtml}<span class="manual-tag">직접추가</span></div>
+          <div>
+            <div class="en">${enHtml}</div>
+            <span class="manual-tag">직접추가</span>
+          </div>
           <div class="action-btns">
             <button class="action-btn listen-btn" title="원어민 음성 듣기">🔊</button>
             <button class="action-btn copy-btn" title="문장 복사">📋</button>
@@ -2676,11 +2689,36 @@
       return card;
     }
 
+    // 카테고리 안의 세부 그룹(소제목 단위)을 순서대로 찾아 반환
+    function getCategoryGroups(categoryId) {
+      const category = document.getElementById(categoryId);
+      if (!category) return [];
+      const groups = [];
+      let currentLabel = '기본';
+      Array.from(category.children).forEach(el => {
+        if (el.classList.contains('phrase-subgroup-title')) {
+          currentLabel = el.textContent.trim();
+        } else if (el.classList.contains('phrase-group')) {
+          groups.push({ label: currentLabel, el });
+        } else if (el.classList.contains('pattern')) {
+          const header = el.querySelector('.pattern-header');
+          const grid = el.querySelector('.pattern-grid');
+          if (grid) groups.push({ label: header ? header.textContent.trim() : currentLabel, el: grid });
+        }
+      });
+      return groups;
+    }
+
     function addPhraseToDOM(categoryId, data) {
       const category = document.getElementById(categoryId);
       if (!category) return;
-      const groups = category.querySelectorAll('.phrase-group');
-      let group = groups[groups.length - 1];
+      const groups = getCategoryGroups(categoryId);
+      const target = typeof data.groupIndex === 'number' ? groups[data.groupIndex] : null;
+      let group = target ? target.el : null;
+      if (!group) {
+        const existing = category.querySelectorAll('.phrase-group');
+        group = existing[existing.length - 1];
+      }
       if (!group) {
         group = document.createElement('div');
         group.className = 'phrase-group';
@@ -2703,6 +2741,19 @@
         option.textContent = titleSpan ? titleSpan.textContent.trim() : cat.id;
         select.appendChild(option);
       });
+    }
+
+    function populateSubgroupSelect(categoryId) {
+      const select = document.getElementById('apSubgroup');
+      const groups = getCategoryGroups(categoryId);
+      select.innerHTML = '';
+      groups.forEach((g, idx) => {
+        const option = document.createElement('option');
+        option.value = String(idx);
+        option.textContent = g.label;
+        select.appendChild(option);
+      });
+      if (groups.length) select.value = String(groups.length - 1);
     }
 
     function renderStoredManualPhrases() {
@@ -2774,7 +2825,11 @@
 
     openAddPhraseBtn.addEventListener('click', () => {
       populateCategorySelect();
+      populateSubgroupSelect(document.getElementById('apCategory').value);
       addPhraseModal.classList.add('show');
+    });
+    document.getElementById('apCategory').addEventListener('change', (e) => {
+      populateSubgroupSelect(e.target.value);
     });
     addModalCloseBtn.addEventListener('click', closeAddModal);
     addModalCancelBtn.addEventListener('click', closeAddModal);
@@ -2887,6 +2942,7 @@
     addPhraseForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       const categoryId = document.getElementById('apCategory').value;
+      const groupIndex = parseInt(document.getElementById('apSubgroup').value, 10);
       let en = document.getElementById('apEnglish').value.trim();
       let ipa = document.getElementById('apIpa').value.trim();
       let ko = document.getElementById('apKorean').value.trim();
@@ -2938,7 +2994,7 @@
 
       const data = {
         id: 'manual-' + Date.now() + '-' + Math.random().toString(36).slice(2, 7),
-        categoryId, en, ipa, ko, note
+        categoryId, groupIndex: isNaN(groupIndex) ? null : groupIndex, en, ipa, ko, note
       };
 
       const list = loadManualPhrases();
