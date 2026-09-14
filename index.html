@@ -2782,6 +2782,17 @@
       if (e.target === addPhraseModal) closeAddModal();
     });
 
+    // 외부 API 호출 시 응답이 없거나 느릴 때 무한 대기하지 않도록 타임아웃 처리
+    async function fetchWithTimeout(url, ms) {
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), ms);
+      try {
+        return await fetch(url, { signal: controller.signal });
+      } finally {
+        clearTimeout(timer);
+      }
+    }
+
     // 발음기호(IPA) 자동 생성: 무료 사전 API(dictionaryapi.dev)로 단어별 IPA를 찾아 조합
     const ipaCache = {};
 
@@ -2789,7 +2800,7 @@
       const key = word.toLowerCase();
       if (key in ipaCache) return ipaCache[key];
       try {
-        const res = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${encodeURIComponent(key)}`);
+        const res = await fetchWithTimeout(`https://api.dictionaryapi.dev/api/v2/entries/en/${encodeURIComponent(key)}`, 4000);
         if (!res.ok) { ipaCache[key] = null; return null; }
         const entries = await res.json();
         let found = null;
@@ -2821,7 +2832,7 @@
     // 자동 번역: 무료 번역 API(MyMemory)로 영어↔한글 자동 채움
     async function translateText(text, langpair) {
       try {
-        const res = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=${langpair}`);
+        const res = await fetchWithTimeout(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=${langpair}`, 5000);
         if (!res.ok) return null;
         const data = await res.json();
         const translated = data && data.responseData && data.responseData.translatedText;
