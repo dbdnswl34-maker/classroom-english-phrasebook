@@ -2521,7 +2521,7 @@
         <div id="apCategoryFields">
           <div class="form-field">
             <label for="apCategory">카테고리</label>
-            <select id="apCategory" required></select>
+            <select id="apCategory"></select>
           </div>
           <div class="form-field">
             <label for="apSubgroup">세부 분류 (선택)</label>
@@ -3111,6 +3111,11 @@
 
       if (!en && !ko) {
         showToast('⚠️ 영어 문장 또는 한글 뜻 중 하나는 입력해 주세요.');
+        return;
+      }
+
+      if (editingType !== 'builtin' && !categoryId) {
+        showToast('⚠️ 카테고리를 선택해 주세요.');
         return;
       }
 
