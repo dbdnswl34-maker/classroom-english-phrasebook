@@ -2925,15 +2925,32 @@
       }
     }
 
-    // 발음기호(IPA) 자동 생성: 무료 사전 API(dictionaryapi.dev)로 단어별 IPA를 찾아 조합
+    // 발음기호(IPA) 자동 생성: 위키낱말사전(안정적) 우선, 실패 시 dictionaryapi.dev로 보완
     const ipaCache = {};
 
-    async function fetchWordIpa(word) {
-      const key = word.toLowerCase();
-      if (key in ipaCache) return ipaCache[key];
+    async function fetchIpaFromWiktionary(word) {
       try {
-        const res = await fetchWithTimeout(`https://api.dictionaryapi.dev/api/v2/entries/en/${encodeURIComponent(key)}`, 4000);
-        if (!res.ok) { ipaCache[key] = null; return null; }
+        const res = await fetchWithTimeout(`https://en.wiktionary.org/w/api.php?action=parse&page=${encodeURIComponent(word)}&prop=wikitext&format=json&origin=*`, 5000);
+        if (!res.ok) return null;
+        const data = await res.json();
+        const wikitext = data.parse ? data.parse.wikitext['*'] : null;
+        if (!wikitext) return null;
+        const engStart = wikitext.indexOf('==English==');
+        if (engStart === -1) return null;
+        const after = wikitext.slice(engStart + 11);
+        const nextHeadingMatch = after.match(/\n==(?!=)/);
+        const engSection = nextHeadingMatch ? after.slice(0, nextHeadingMatch.index) : after;
+        const m = engSection.match(/\{\{IPA\|en\|([^}|]+)/);
+        return m ? m[1].replace(/^\/|\/$/g, '').replace(/\./g, '') : null;
+      } catch (err) {
+        return null;
+      }
+    }
+
+    async function fetchIpaFromDictionaryApi(word) {
+      try {
+        const res = await fetchWithTimeout(`https://api.dictionaryapi.dev/api/v2/entries/en/${encodeURIComponent(word)}`, 4000);
+        if (!res.ok) return null;
         const entries = await res.json();
         let found = null;
         for (const entry of entries) {
@@ -2943,13 +2960,26 @@
             if (withText) { found = withText.text; break; }
           }
         }
-        found = found ? found.replace(/^\/|\/$/g, '') : null;
-        ipaCache[key] = found;
-        return found;
+        return found ? found.replace(/^\/|\/$/g, '') : null;
       } catch (err) {
-        ipaCache[key] = null;
         return null;
       }
+    }
+
+    async function fetchWordIpa(word) {
+      const key = word.toLowerCase();
+      if (key in ipaCache) return ipaCache[key];
+
+      let found = await fetchIpaFromWiktionary(key);
+      if (!found) found = await fetchIpaFromDictionaryApi(key);
+      // 단순 복수형(-s)은 발음기호가 따로 없는 경우가 많아 단수형으로 한 번 더 시도
+      if (!found && key.length > 3 && key.endsWith('s') && !key.endsWith('ss')) {
+        const singular = key.slice(0, -1);
+        found = await fetchIpaFromWiktionary(singular) || await fetchIpaFromDictionaryApi(singular);
+      }
+
+      ipaCache[key] = found || null;
+      return ipaCache[key];
     }
 
     async function autoGenerateIpa(enText) {
