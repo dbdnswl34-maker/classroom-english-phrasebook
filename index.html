@@ -3034,7 +3034,89 @@
     const YES_NO_STARTERS = new Set(['am', 'is', 'are', 'was', 'were', 'do', 'does', 'did', 'can', 'could', 'will', 'would', 'shall', 'should', 'may', 'might', 'must', 'have', 'has', 'had']);
     const WH_WORDS = new Set(['what', 'where', 'when', 'why', 'how', 'who', 'whom', 'whose', 'which']);
 
-    function autoMarkStressAndIntonation(rawText) {
+    // 영어 철자를 대략적인 음절 단위로 나누는 간단한 규칙 기반 분리기
+    // (완벽한 음성학적 분석은 아니지만, 초등 교실영어에 자주 쓰이는 일반적인 단어에는 잘 맞습니다)
+    const ONSET_CLUSTERS = new Set([
+      'bl', 'br', 'ch', 'cl', 'cr', 'dr', 'dw', 'fl', 'fr', 'gl', 'gr', 'kl', 'kn', 'kr',
+      'ph', 'pl', 'pr', 'qu', 'sc', 'sh', 'sk', 'sl', 'sm', 'sn', 'sp', 'st', 'sw',
+      'th', 'tr', 'tw', 'wh', 'wr', 'gh'
+    ]);
+
+    function splitEnglishSyllablesHeuristic(word) {
+      const lower = word.toLowerCase();
+      const isVowel = c => 'aeiouy'.includes(c);
+
+      let effective = lower;
+      let silentE = false;
+      if (lower.length > 3 && /[^aeiouy]e$/.test(lower) && !/[aeiouy]le$/.test(lower)) {
+        effective = lower.slice(0, -1);
+        silentE = true;
+      }
+
+      const groups = [];
+      let i = 0;
+      while (i < effective.length) {
+        if (isVowel(effective[i])) {
+          let j = i;
+          while (j < effective.length && isVowel(effective[j])) j++;
+          groups.push([i, j]);
+          i = j;
+        } else {
+          i++;
+        }
+      }
+
+      if (groups.length <= 1) return [word];
+
+      const splitPoints = [];
+      for (let g = 0; g < groups.length - 1; g++) {
+        const vEnd = groups[g][1];
+        const vNextStart = groups[g + 1][0];
+        const consonants = effective.slice(vEnd, vNextStart);
+        let splitAt;
+        if (consonants.length === 0) {
+          splitAt = vEnd;
+        } else if (consonants.length === 1) {
+          splitAt = vEnd;
+        } else {
+          const lastTwo = consonants.slice(-2);
+          splitAt = ONSET_CLUSTERS.has(lastTwo) ? vNextStart - 2 : vNextStart - 1;
+        }
+        splitPoints.push(splitAt);
+      }
+
+      const bounds = [0, ...splitPoints, effective.length];
+      const syllables = [];
+      for (let s = 0; s < bounds.length - 1; s++) {
+        syllables.push(word.slice(bounds[s], bounds[s + 1]));
+      }
+      if (silentE) {
+        syllables[syllables.length - 1] += word.slice(-1);
+      }
+      return syllables;
+    }
+
+    // IPA 발음기호에서 강세 표시(ˈ) 앞에 모음 덩어리가 몇 개 있는지 세어 강세 음절의 인덱스를 추정
+    function findStressedSyllableIndexFromIpa(ipa) {
+      const stressPos = ipa.indexOf('ˈ');
+      if (stressPos === -1) return null;
+      const before = ipa.slice(0, stressPos);
+      const vowelRuns = before.match(/[aeiouyəɪʊɛæɑɔʌɜɒ]+/gi);
+      return vowelRuns ? vowelRuns.length : 0;
+    }
+
+    // 강세를 줄 단어 하나를 받아, 가능하면 단어 전체가 아니라 강세 음절만 *로 감싸서 반환
+    async function markWordWithSyllableStress(word) {
+      const syllables = splitEnglishSyllablesHeuristic(word);
+      if (syllables.length <= 1) return `*${word}*`;
+      const ipa = await fetchWordIpa(word);
+      if (!ipa) return `*${word}*`;
+      const idx = findStressedSyllableIndexFromIpa(ipa);
+      if (idx === null || idx < 0 || idx >= syllables.length) return `*${word}*`;
+      return syllables.map((syl, i) => (i === idx ? `*${syl}*` : syl)).join('');
+    }
+
+    async function autoMarkStressAndIntonation(rawText) {
       const t = rawText.trim();
       if (!t) return t;
 
@@ -3076,10 +3158,16 @@
         }
       }
 
+      // 선택된 내용어는 단어 전체가 아니라 강세 음절만 강조 (예: correct → cor*rect*)
+      const markedWords = await Promise.all(wordMatches.map(async (m, i) => {
+        if (!chosen.has(i)) return m[0];
+        return await markWordWithSyllableStress(m[0]);
+      }));
+
       let wordCounter = -1;
-      const marked = t.replace(/[A-Za-z']+/g, (word) => {
+      const marked = t.replace(/[A-Za-z']+/g, () => {
         wordCounter++;
-        return chosen.has(wordCounter) ? `*${word}*` : word;
+        return markedWords[wordCounter];
       });
 
       return `${marked} ${arrow}`;
@@ -3122,7 +3210,8 @@
         }
 
         if (!/[\*↘↗]/.test(en)) {
-          en = autoMarkStressAndIntonation(en);
+          submitBtn.textContent = '강세 분석 중...';
+          en = await autoMarkStressAndIntonation(en);
         }
 
         if (!ko) {
