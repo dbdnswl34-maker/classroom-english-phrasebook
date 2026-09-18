@@ -812,6 +812,27 @@
       margin-left: 6px;
       vertical-align: middle;
     }
+
+    .grammar-warning {
+      display: none;
+      font-size: 0.82rem;
+      color: #9a3412;
+      background: #fff7ed;
+      border: 1.5px dashed #fb923c;
+      border-radius: 8px;
+      padding: 0.6rem 0.75rem;
+      margin-top: 0.5rem;
+      line-height: 1.55;
+    }
+
+    .grammar-warning.show {
+      display: block;
+    }
+
+    .grammar-warning ul {
+      margin: 0.3rem 0 0;
+      padding-left: 1.1rem;
+    }
   </style>
 </head>
 <body>
@@ -2462,6 +2483,7 @@
           <label for="apEnglish">영어 문장 (선택)</label>
           <input type="text" id="apEnglish" placeholder="예: Close the door, please.">
           <div class="form-hint">그냥 평문으로 입력하면 강세(*)와 억양(↘/↗)이 자동으로 표시돼요. 직접 *단어*와 ↘/↗를 넣으면 그대로 사용됩니다.</div>
+          <div class="grammar-warning" id="apGrammarWarning"></div>
         </div>
         <div class="form-field">
           <label for="apIpa">발음기호 (IPA, 선택)</label>
@@ -2857,10 +2879,15 @@
     // 수정 모드 상태: null이면 새 문장 추가, 아니면 수정 중인 문장 정보
     let editingType = null;
     let editingId = null;
+    // 문법 검사에서 오류가 발견된 뒤 사용자가 "그래도 추가하기"를 눌렀는지 여부
+    let grammarConfirmed = false;
 
     function resetModalToAddMode() {
       editingType = null;
       editingId = null;
+      grammarConfirmed = false;
+      document.getElementById('apGrammarWarning').classList.remove('show');
+      document.getElementById('apGrammarWarning').innerHTML = '';
       addModalTitle.textContent = '✏️ 문장 추가';
       addPhraseForm.querySelector('button[type="submit"]').textContent = '추가하기';
       apCategoryFields.classList.remove('hidden');
@@ -2886,12 +2913,20 @@
     addPhraseModal.addEventListener('click', (e) => {
       if (e.target === addPhraseModal) closeAddModal();
     });
+    document.getElementById('apEnglish').addEventListener('input', () => {
+      grammarConfirmed = false;
+      document.getElementById('apGrammarWarning').classList.remove('show');
+      document.getElementById('apGrammarWarning').innerHTML = '';
+    });
 
     function openEditModalForManual(id) {
       const item = loadManualPhrases().find(p => p.id === id);
       if (!item) return;
       editingType = 'manual';
       editingId = id;
+      grammarConfirmed = false;
+      document.getElementById('apGrammarWarning').classList.remove('show');
+      document.getElementById('apGrammarWarning').innerHTML = '';
       addModalTitle.textContent = '✏️ 문장 수정';
       addPhraseForm.querySelector('button[type="submit"]').textContent = '수정하기';
       apCategoryFields.classList.remove('hidden');
@@ -2912,6 +2947,9 @@
     function openEditModalForBuiltin(card, builtinId) {
       editingType = 'builtin';
       editingId = builtinId;
+      grammarConfirmed = false;
+      document.getElementById('apGrammarWarning').classList.remove('show');
+      document.getElementById('apGrammarWarning').innerHTML = '';
       addModalTitle.textContent = '✏️ 문장 수정';
       addPhraseForm.querySelector('button[type="submit"]').textContent = '수정하기';
       apCategoryFields.classList.add('hidden');
@@ -2928,11 +2966,11 @@
     }
 
     // 외부 API 호출 시 응답이 없거나 느릴 때 무한 대기하지 않도록 타임아웃 처리
-    async function fetchWithTimeout(url, ms) {
+    async function fetchWithTimeout(url, ms, options) {
       const controller = new AbortController();
       const timer = setTimeout(() => controller.abort(), ms);
       try {
-        return await fetch(url, { signal: controller.signal });
+        return await fetch(url, { ...(options || {}), signal: controller.signal });
       } finally {
         clearTimeout(timer);
       }
@@ -2985,6 +3023,47 @@
       } catch (err) {
         return null;
       }
+    }
+
+    // 문법/철자 검사: 무료 API(LanguageTool)로 확인 (실패해도 추가는 막지 않음, 참고용 경고만 표시)
+    async function checkGrammar(text) {
+      try {
+        const body = new URLSearchParams({ text, language: 'en-US' });
+        const res = await fetchWithTimeout('https://api.languagetool.org/v2/check', 6000, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: body.toString()
+        });
+        if (!res.ok) return [];
+        const data = await res.json();
+        return (data.matches || []).map(m => ({
+          message: m.shortMessage && m.shortMessage.trim() ? m.shortMessage : m.message,
+          replacements: (m.replacements || []).slice(0, 3).map(r => r.value)
+        }));
+      } catch (err) {
+        return [];
+      }
+    }
+
+    const apGrammarWarning = document.getElementById('apGrammarWarning');
+
+    function renderGrammarWarning(issues) {
+      if (!issues.length) {
+        apGrammarWarning.classList.remove('show');
+        apGrammarWarning.innerHTML = '';
+        return;
+      }
+      const items = issues.slice(0, 4).map(issue => {
+        const suggestion = issue.replacements.length ? ` → <strong>${escapeHtml(issue.replacements.join(', '))}</strong>` : '';
+        return `<li>${escapeHtml(issue.message)}${suggestion}</li>`;
+      }).join('');
+      apGrammarWarning.innerHTML = `⚠️ 문법/철자를 확인해 주세요 (참고용, 오탐일 수 있어요):<ul>${items}</ul>`;
+      apGrammarWarning.classList.add('show');
+    }
+
+    function clearGrammarWarning() {
+      apGrammarWarning.classList.remove('show');
+      apGrammarWarning.innerHTML = '';
     }
 
     // 자동 강세(*단어*) 및 억양(↘/↗) 표시 (이미 *나 ↘/↗가 있으면 건드리지 않음)
@@ -3079,6 +3158,20 @@
         if (!ipa) {
           submitBtn.textContent = '발음기호 조회 중...';
           ipa = await autoGenerateIpa(en);
+        }
+
+        if (!grammarConfirmed) {
+          submitBtn.textContent = '문법 검사 중...';
+          const plainForCheck = en.replace(/[\*↘↗]/g, '').trim();
+          const issues = await checkGrammar(plainForCheck);
+          if (issues.length) {
+            renderGrammarWarning(issues);
+            grammarConfirmed = true;
+            submitBtn.disabled = false;
+            submitBtn.textContent = '⚠️ 오류 있음 - 그래도 ' + originalBtnText;
+            return;
+          }
+          clearGrammarWarning();
         }
       } catch (err) {
         // 자동화 중 일부가 실패해도 입력된 내용으로 계속 진행
