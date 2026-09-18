@@ -3100,9 +3100,37 @@
         arrow = '↘';
       }
 
+      // 내용어 후보(함수어가 아닌 단어)의 위치를 모두 찾은 뒤,
+      // 실제 예문처럼 문장당 2~3개 정도만 강세를 주도록 제한
+      const wordMatches = Array.from(t.matchAll(/[A-Za-z']+/g));
+      const contentIdxs = [];
+      wordMatches.forEach((m, i) => {
+        if (!FUNCTION_WORDS.has(m[0].toLowerCase())) contentIdxs.push(i);
+      });
+
+      let stressCount;
+      if (contentIdxs.length <= 3) {
+        stressCount = contentIdxs.length;
+      } else {
+        stressCount = Math.min(3, Math.max(2, Math.ceil(contentIdxs.length * 0.4)));
+      }
+
+      const chosen = new Set();
+      if (contentIdxs.length) {
+        // 문장 끝쪽 내용어(문장의 초점)는 항상 강세
+        chosen.add(contentIdxs[contentIdxs.length - 1]);
+        const remaining = contentIdxs.slice(0, -1);
+        const extra = stressCount - 1;
+        for (let k = 1; k <= extra && remaining.length; k++) {
+          const pos = Math.min(Math.round((remaining.length * k) / (extra + 1)), remaining.length - 1);
+          chosen.add(remaining[pos]);
+        }
+      }
+
+      let wordCounter = -1;
       const marked = t.replace(/[A-Za-z']+/g, (word) => {
-        const lower = word.toLowerCase();
-        return FUNCTION_WORDS.has(lower) ? word : `*${word}*`;
+        wordCounter++;
+        return chosen.has(wordCounter) ? `*${word}*` : word;
       });
 
       return `${marked} ${arrow}`;
