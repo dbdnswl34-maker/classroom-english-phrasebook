@@ -3389,7 +3389,8 @@
           en: reconstructEnSource(targetCard.querySelector('.en')),
           ipa: targetCard.querySelector('.ipa') ? targetCard.querySelector('.ipa').textContent.trim() : '',
           ko: targetCard.querySelector('.ko') ? targetCard.querySelector('.ko').textContent.trim() : '',
-          note: targetCard.querySelector('.note') ? targetCard.querySelector('.note').textContent.replace(/^💡\s*/, '').trim() : ''
+          note: targetCard.querySelector('.note') ? targetCard.querySelector('.note').textContent.replace(/^💡\s*/, '').trim() : '',
+          alts: Array.from(targetCard.querySelectorAll('.en.en-alt')).map(reconstructEnSource)
         };
         base.alts = [...(base.alts || []), newEn];
         if (newIpa) base.ipa = [base.ipa, newIpa].filter(Boolean).join(' · ');
