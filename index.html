@@ -3374,7 +3374,7 @@
       }
       const items = matches.map((m, i) => `
         <li>
-          ${escapeHtml(m.en)} <em>(${escapeHtml(m.ko)})</em>
+          ${escapeHtml(m.en)}${m.ko ? ` <em>(${escapeHtml(m.ko)})</em>` : ''}
           ${offerMerge ? `<button type="button" class="btn-secondary merge-into-btn" style="margin-left:0.4rem; padding:0.15rem 0.55rem; font-size:0.76rem;" data-merge-type="${m.type}" data-merge-id="${escapeHtml(m.id)}">이 문장에 합치기</button>` : ''}
         </li>
       `).join('');
