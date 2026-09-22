@@ -3298,7 +3298,13 @@
           submitBtn.textContent = '한글 번역 중...';
           const plainEn = en.replace(/[\*↘↗]/g, '').trim();
           const translatedKo = await translateText(plainEn, 'en|ko');
-          if (translatedKo) ko = translatedKo;
+          if (!translatedKo) {
+            showToast('⚠️ 한글 자동 번역에 실패했습니다. 한글 뜻을 직접 입력해 주세요.');
+            submitBtn.disabled = false;
+            submitBtn.textContent = originalBtnText;
+            return;
+          }
+          ko = translatedKo;
         }
 
         if (!ipa) {
