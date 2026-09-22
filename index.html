@@ -2681,6 +2681,13 @@
       return groups;
     }
 
+    // 카드가 현재 어느 그룹(세부 분류) 안에 있는지 인덱스를 찾음
+    function findGroupIndexForCard(card, categoryId) {
+      const groups = getCategoryGroups(categoryId);
+      const idx = groups.findIndex(g => g.el === card.parentElement);
+      return idx === -1 ? null : idx;
+    }
+
     function addPhraseToDOM(categoryId, data) {
       const category = document.getElementById(categoryId);
       if (!category) return;
@@ -2818,6 +2825,25 @@
       } catch (e) {}
     }
 
+    // 기존(built-in) 문장을 다른 카테고리/세부 분류로 옮긴 기록 저장
+    const BUILTIN_MOVES_KEY = 'builtinPhraseMoves';
+
+    function loadBuiltinMoves() {
+      try {
+        return JSON.parse(localStorage.getItem(BUILTIN_MOVES_KEY) || '{}');
+      } catch (e) {
+        return {};
+      }
+    }
+
+    function saveBuiltinMove(id, target) {
+      const all = loadBuiltinMoves();
+      all[id] = target;
+      try {
+        localStorage.setItem(BUILTIN_MOVES_KEY, JSON.stringify(all));
+      } catch (e) {}
+    }
+
     // .en 요소의 렌더링된 DOM에서 *강세* 표기가 포함된 원본 텍스트를 복원
     function reconstructEnSource(enEl) {
       let result = '';
@@ -2879,6 +2905,8 @@
     function initBuiltinPhrases() {
       const hidden = loadHiddenBuiltinIds();
       const overrides = loadBuiltinOverrides();
+      const moves = loadBuiltinMoves();
+      const toRelocate = [];
       document.querySelectorAll('.category').forEach(cat => {
         if (cat.id === 'cat-tips') return;
         const phrases = cat.querySelectorAll('.phrase');
@@ -2895,7 +2923,18 @@
           }
           ensureEditButton(card);
           ensureDeleteButton(card);
+          if (moves[builtinId]) {
+            toRelocate.push({ card, target: moves[builtinId] });
+          }
         });
+      });
+      // 원래 위치 기준으로 id 배정이 모두 끝난 뒤에 이동을 적용 (다른 카드의 id에 영향 없도록)
+      toRelocate.forEach(({ card, target }) => {
+        const groups = getCategoryGroups(target.categoryId);
+        const group = (typeof target.groupIndex === 'number' && groups[target.groupIndex])
+          ? groups[target.groupIndex]
+          : groups[groups.length - 1];
+        if (group) group.el.appendChild(card);
       });
     }
 
@@ -3072,7 +3111,15 @@
       document.getElementById('apGrammarWarning').innerHTML = '';
       addModalTitle.textContent = '✏️ 문장 수정';
       addPhraseForm.querySelector('button[type="submit"]').textContent = '수정하기';
-      apCategoryFields.classList.add('hidden');
+      apCategoryFields.classList.remove('hidden');
+
+      const currentCategory = card.closest('.category');
+      const currentCategoryId = currentCategory ? currentCategory.id : '';
+      populateCategorySelect();
+      if (currentCategoryId) document.getElementById('apCategory').value = currentCategoryId;
+      populateSubgroupSelect(currentCategoryId);
+      const currentGroupIdx = currentCategoryId ? findGroupIndexForCard(card, currentCategoryId) : null;
+      if (currentGroupIdx !== null) document.getElementById('apSubgroup').value = String(currentGroupIdx);
 
       const enEl = card.querySelector('.en');
       const ipaEl = card.querySelector('.ipa');
@@ -3472,7 +3519,21 @@
       } else if (editingType === 'builtin') {
         saveBuiltinOverride(editingId, { en, ipa, ko, note });
         const card = document.querySelector(`.phrase[data-builtin-id="${editingId}"]`);
-        if (card) applyContentToCard(card, { en, ipa, ko, note });
+        if (card) {
+          applyContentToCard(card, { en, ipa, ko, note });
+          const currentCategory = card.closest('.category');
+          const currentCategoryId = currentCategory ? currentCategory.id : null;
+          const currentGroupIdx = currentCategoryId ? findGroupIndexForCard(card, currentCategoryId) : null;
+          const targetGroupIdx = isNaN(groupIndex) ? null : groupIndex;
+          if (categoryId && (categoryId !== currentCategoryId || targetGroupIdx !== currentGroupIdx)) {
+            const groups = getCategoryGroups(categoryId);
+            const target = (targetGroupIdx !== null && groups[targetGroupIdx]) ? groups[targetGroupIdx] : groups[groups.length - 1];
+            if (target) {
+              saveBuiltinMove(editingId, { categoryId, groupIndex: targetGroupIdx === null ? groups.indexOf(target) : targetGroupIdx });
+              target.el.appendChild(card);
+            }
+          }
+        }
         closeAddModal();
         showToast('✏️ 문장이 수정되었습니다.');
       } else {
