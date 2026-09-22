@@ -68,7 +68,21 @@
     .cat-nav-list {
       display: flex;
       flex-wrap: wrap;
+      align-items: center;
       gap: 0.5rem;
+    }
+
+    .cat-nav-group-label {
+      width: 100%;
+      font-size: 0.7rem;
+      font-weight: 800;
+      color: #94a3b8;
+      letter-spacing: 0.03em;
+      margin-top: 0.2rem;
+    }
+
+    .cat-nav-group-label:first-child {
+      margin-top: 0;
     }
 
     .cat-nav-btn {
@@ -315,6 +329,31 @@
       gap: 0.55rem;
       border-bottom: 2px solid var(--primary-soft);
       padding-bottom: 0.6rem;
+    }
+
+    .macro-title {
+      scroll-margin-top: 110px;
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: white;
+      background: linear-gradient(135deg, #1d4ed8 0%, #2563eb 100%);
+      padding: 0.7rem 1.1rem;
+      border-radius: 12px;
+      margin: 2rem 0 1.1rem;
+      display: flex;
+      align-items: baseline;
+      gap: 0.5rem;
+      letter-spacing: 0.01em;
+    }
+
+    .macro-title:first-of-type {
+      margin-top: 0;
+    }
+
+    .macro-title-sub {
+      font-size: 0.78rem;
+      font-weight: 600;
+      opacity: 0.85;
     }
 
     .category-subtitle {
@@ -862,15 +901,16 @@
         <span>⚡ 소제목 바로가기 (클릭 시 해당 카테고리로 즉시 이동합니다)</span>
       </div>
       <div class="cat-nav-list">
+        <div class="cat-nav-group-label">🚪 도입</div>
         <a href="#cat-greeting" class="cat-nav-btn">👋 1. 인사·시작</a>
         <a href="#cat-attendance" class="cat-nav-btn">📋 2. 출석 확인</a>
-        <a href="#cat-instruction" class="cat-nav-btn">📖 3. 지시어·진행</a>
+        <div class="cat-nav-group-label">📚 전개</div>
+        <a href="#cat-instruction" class="cat-nav-btn">📖 3. 지시어·진행·확인</a>
         <a href="#cat-praise" class="cat-nav-btn">🌟 4. 칭찬·격려</a>
         <a href="#cat-discipline" class="cat-nav-btn">🤫 5. 주의집중·지도</a>
-        <a href="#cat-games" class="cat-nav-btn">🎲 6. 활동·게임</a>
-        <a href="#cat-group" class="cat-nav-btn">👥 7. 짝·모둠</a>
-        <a href="#cat-check" class="cat-nav-btn">❓ 8. 학습 확인</a>
-        <a href="#cat-wrapup" class="cat-nav-btn">🔔 9. 수업 마무리</a>
+        <a href="#cat-games" class="cat-nav-btn">🎲 6. 활동·게임·모둠</a>
+        <div class="cat-nav-group-label">🔔 마무리</div>
+        <a href="#cat-wrapup" class="cat-nav-btn">🔔 7. 수업 마무리</a>
         <a href="#cat-tips" class="cat-nav-btn">💡 지도 핵심 팁</a>
       </div>
     </nav>
@@ -885,6 +925,8 @@
     <div class="add-phrase-row">
       <button type="button" id="openAddPhraseBtn" class="add-phrase-btn">➕ 문장 직접 추가하기</button>
     </div>
+
+    <div class="macro-title" id="macro-intro">🚪 도입 <span class="macro-title-sub">Introduction</span></div>
 
     <!-- 1. 인사 & 수업 시작 (11) -->
     <section class="category" id="cat-greeting">
@@ -1091,11 +1133,13 @@
       </div>
     </section>
 
+    <div class="macro-title" id="macro-develop">📚 전개 <span class="macro-title-sub">Development</span></div>
+
     <!-- 3. 지시어 & 수업 진행 (42) -->
     <section class="category" id="cat-instruction">
       <h2 class="category-title">
-        <span>📖 3. 지시어 &amp; 수업 진행</span>
-        <span class="category-subtitle">Instructions · 42개</span>
+        <span>📖 3. 지시어 · 수업 진행 · 확인</span>
+        <span class="category-subtitle">Instructions &amp; Checks · 53개</span>
       </h2>
 
       <div class="phrase-subgroup-title">📚 교재 및 숙제 지시</div>
@@ -1661,6 +1705,154 @@
           <div class="note">💡 <strong>교실영어 지도 팁 (what 관계사절):</strong> 여기서 what은 의문사("무엇")가 아니라 <strong>"~한 것(관계대명사)"</strong>으로 쓰여 "하나가 만든 것"을 의미하는 명사절을 이끕니다.</div>
         </div>
       </div>
+
+      <div class="phrase-subgroup-title">❓ 학습 확인 및 질문</div>
+      <div class="phrase-group">
+        <div class="phrase">
+          <div class="en-container">
+            <div>
+              <div class="en">Do you under*stand*? ↗</div>
+              <div class="en en-alt">Does that make *sense*? ↗</div>
+            </div>
+            <div class="action-btns">
+              <button class="action-btn listen-btn" title="원어민 음성 듣기">🔊</button>
+              <button class="action-btn copy-btn" title="문장 복사">📋</button>
+            </div>
+          </div>
+          <div class="pron-panel"><div class="ipa">/duː juː ˌʌndərˈstænd/ · /dʌz ðæt meɪk sens/</div></div>
+          <div class="ko">이해했나요? (두 표현 모두 자연스럽게 쓰여요)</div>
+          <div class="note">💡 <strong>Yes/No 의문문:</strong> 일반의문문이므로 끝을 올려 묻습니다(↗). understand는 3음절인 <strong>-stand</strong>에, sense는 핵심어 자체에 주 강세가 있습니다.</div>
+        </div>
+
+        <div class="phrase">
+          <div class="en-container">
+            <div class="en">Any *ques*tions? ↗</div>
+            <div class="action-btns">
+              <button class="action-btn listen-btn" title="원어민 음성 듣기">🔊</button>
+              <button class="action-btn copy-btn" title="문장 복사">📋</button>
+            </div>
+          </div>
+          <div class="pron-panel"><div class="ipa">/ˈeni ˈkwestʃənz/</div></div>
+          <div class="ko">질문 있나요?</div>
+          <div class="note">💡 <strong>상승조:</strong> 질문 유무를 확인하는 약식 의문문이므로 끝을 친근하게 올립니다(↗).</div>
+        </div>
+
+        <div class="phrase">
+          <div class="en-container">
+            <div class="en">Which *one* is the *an*swer? ↘</div>
+            <div class="action-btns">
+              <button class="action-btn listen-btn" title="원어민 음성 듣기">🔊</button>
+              <button class="action-btn copy-btn" title="문장 복사">📋</button>
+            </div>
+          </div>
+          <div class="pron-panel"><div class="ipa">/wɪtʃ wʌn ɪz ðə ˈænsər/</div></div>
+          <div class="ko">어떤 게 답이에요?</div>
+          <div class="note">💡 <strong>교실영어 지도 팁 (Wh-의문문 억양):</strong> Which로 시작하는 의문사 의문문이므로 끝을 하강(↘)합니다.</div>
+        </div>
+
+        <div class="phrase">
+          <div class="en-container">
+            <div class="en">Can you ex*plain* it in your *own* words? ↗</div>
+            <div class="action-btns">
+              <button class="action-btn listen-btn" title="원어민 음성 듣기">🔊</button>
+              <button class="action-btn copy-btn" title="문장 복사">📋</button>
+            </div>
+          </div>
+          <div class="pron-panel"><div class="ipa">/kæn juː ɪkˈspleɪn ɪt ɪn jʊər oʊn wɜːrdz/</div></div>
+          <div class="ko">자신의 말로 설명해 볼 수 있나요?</div>
+          <div class="note">💡 <strong>Yes/No 의문문:</strong> 능력이나 요청을 묻는 질문이므로 끝을 올려 묻습니다(↗).</div>
+        </div>
+
+        <div class="phrase">
+          <div class="en-container">
+            <div class="en">How did you *know*? ↘</div>
+            <div class="action-btns">
+              <button class="action-btn listen-btn" title="원어민 음성 듣기">🔊</button>
+              <button class="action-btn copy-btn" title="문장 복사">📋</button>
+            </div>
+          </div>
+          <div class="pron-panel"><div class="ipa">/haʊ dɪd juː noʊ/</div></div>
+          <div class="ko">어떻게 알았어요?</div>
+          <div class="note">💡 <strong>의문사 억양:</strong> How로 시작하는 의문사 질문이므로 끝을 내립니다(↘). 본동사 know에 초점이 실립니다.</div>
+        </div>
+      </div>
+
+      <div class="pattern">
+        <div class="pattern-header">🧩 문형: Let's + 동사 + what 절 (~한 것을 ~해 봅시다)</div>
+        <div class="pattern-grid">
+          <div class="phrase">
+            <div class="en-container">
+              <div>
+                <div class="en">Let's re*view* what we *learned*. ↘</div>
+                <div class="en en-alt">Let's *check* the *an*swers to*geth*er. ↘</div>
+              </div>
+              <div class="action-btns">
+                <button class="action-btn listen-btn" title="원어민 음성 듣기">🔊</button>
+                <button class="action-btn copy-btn" title="문장 복사">📋</button>
+              </div>
+            </div>
+            <div class="pron-panel"><div class="ipa">/lets rɪˈvjuː wʌt wiː lɜːrnd/ · /lets tʃek ðə ˈænsərz təˈɡeðər/</div></div>
+            <div class="ko">배운 내용을 복습해 볼까요. (두 표현 모두 자연스럽게 쓰여요)</div>
+            <div class="note">💡 <strong>교실영어 지도 팁 (what의 두 가지 쓰임):</strong><br>
+            • <strong>관계대명사 (~하는 것):</strong> 여기서 what은 의문사가 아니라 <em>"what we learned = 우리가 배운 것"</em>을 의미하는 관계사입니다.<br>
+            • <strong>의문사 (무엇):</strong> 아래 카드 <em>"What does a family do?"</em>처럼 직접 의문일 때 '무엇'으로 쓰입니다.</div>
+          </div>
+
+          <div class="phrase">
+            <div class="en-container">
+              <div class="en">Let's *see* what this is a*bout*. ↘</div>
+              <div class="action-btns">
+                <button class="action-btn listen-btn" title="원어민 음성 듣기">🔊</button>
+                <button class="action-btn copy-btn" title="문장 복사">📋</button>
+              </div>
+            </div>
+            <div class="pron-panel"><div class="ipa">/lets siː wʌt ðɪs ɪz əˈbaʊt/</div></div>
+            <div class="ko">어떤 내용인지 봅시다.</div>
+            <div class="note">💡 <strong>교실영어 지도 팁:</strong> "what this is about"은 "이것이 무엇에 관한 것인지(간접의문문)" 또는 "이 내용에 관한 것"을 뜻하며 문장 끝을 하강(↘)합니다.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="phrase-group">
+        <div class="phrase">
+          <div class="en-container">
+            <div class="en">What does a *fam*ily do for their *mom*? ↘</div>
+            <div class="action-btns">
+              <button class="action-btn listen-btn" title="원어민 음성 듣기">🔊</button>
+              <button class="action-btn copy-btn" title="문장 복사">📋</button>
+            </div>
+          </div>
+          <div class="pron-panel"><div class="ipa">/wʌt dʌz ə ˈfæməli duː fɔːr ðer mɑːm/</div></div>
+          <div class="ko">가족은 엄마를 위해 어떤 일을 할까요?</div>
+          <div class="note">💡 <strong>교실영어 지도 팁 (의문사 what):</strong> 배운 내용을 나타내는 관계대명사 what과 달리 여기서는 '무엇'을 묻는 의문사이며, 의문사 질문이므로 끝은 하강(↘)합니다.</div>
+        </div>
+
+        <div class="phrase">
+          <div class="en-container">
+            <div class="en">What are they *do*ing at the *beach*? ↘</div>
+            <div class="action-btns">
+              <button class="action-btn listen-btn" title="원어민 음성 듣기">🔊</button>
+              <button class="action-btn copy-btn" title="문장 복사">📋</button>
+            </div>
+          </div>
+          <div class="pron-panel"><div class="ipa">/wʌt ɑːr ðeɪ ˈduːɪŋ æt ðə biːtʃ/</div></div>
+          <div class="ko">바닷가에서 그들은 무엇을 하고 있나요?</div>
+          <div class="note">💡 <strong>의문사 억양:</strong> What 의문문으로 끝을 내립니다(↘). doing과 beach에 강세가 들어갑니다.</div>
+        </div>
+
+        <div class="phrase">
+          <div class="en-container">
+            <div class="en">Who would like to pre*sent*? ↘</div>
+            <div class="action-btns">
+              <button class="action-btn listen-btn" title="원어민 음성 듣기">🔊</button>
+              <button class="action-btn copy-btn" title="문장 복사">📋</button>
+            </div>
+          </div>
+          <div class="pron-panel"><div class="ipa">/huː wʊd laɪk tu prɪˈzent/</div></div>
+          <div class="ko">발표해 볼 사람 있나요?</div>
+          <div class="note">💡 <strong>동사 vs 명사 품사 강세:</strong> '발표하다'라는 동사일 때는 2음절인 <strong>-sent</strong>(/prɪˈzent/)에 강세가 옵니다. (1음절에 주면 '선물, 현재'라는 명사/형용사 /ˈpreznt/가 됩니다.)</div>
+        </div>
+      </div>
     </section>
 
     <!-- 4. 칭찬 & 격려 (8) -->
@@ -1898,8 +2090,8 @@
     <!-- 6. 활동 & 게임 진행 (11) -->
     <section class="category" id="cat-games">
       <h2 class="category-title">
-        <span>🎲 6. 활동 &amp; 게임 진행</span>
-        <span class="category-subtitle">Activities &amp; Games · 11개</span>
+        <span>🎲 6. 활동 · 게임 · 모둠 활동</span>
+        <span class="category-subtitle">Activities, Games &amp; Group Work · 21개</span>
       </h2>
 
       <div class="phrase-group">
@@ -2019,14 +2211,8 @@
           <div class="note">💡 <strong>교실영어 지도 팁 (Wh-의문문 억양):</strong> Which로 시작하는 의문사 질문이므로 끝을 내립니다(↘). 본동사인 won에 최종 강세가 옵니다.</div>
         </div>
       </div>
-    </section>
 
-    <!-- 7. 짝 & 모둠 활동 (10) -->
-    <section class="category" id="cat-group">
-      <h2 class="category-title">
-        <span>👥 7. 짝 &amp; 모둠 활동</span>
-        <span class="category-subtitle">Pair &amp; Group Work · 10개</span>
-      </h2>
+      <div class="phrase-subgroup-title">👥 짝 &amp; 모둠 활동</div>
       <div class="phrase-group">
         <div class="phrase">
           <div class="en-container">
@@ -2143,165 +2329,12 @@
       </div>
     </section>
 
-    <!-- 8. 학습 확인 & 질문 (11) -->
-    <section class="category" id="cat-check">
-      <h2 class="category-title">
-        <span>❓ 8. 학습 확인 &amp; 질문</span>
-        <span class="category-subtitle">Checking Understanding · 11개</span>
-      </h2>
+    <div class="macro-title" id="macro-wrap">🔔 마무리 <span class="macro-title-sub">Closing</span></div>
 
-      <div class="phrase-group">
-        <div class="phrase">
-          <div class="en-container">
-            <div>
-              <div class="en">Do you under*stand*? ↗</div>
-              <div class="en en-alt">Does that make *sense*? ↗</div>
-            </div>
-            <div class="action-btns">
-              <button class="action-btn listen-btn" title="원어민 음성 듣기">🔊</button>
-              <button class="action-btn copy-btn" title="문장 복사">📋</button>
-            </div>
-          </div>
-          <div class="pron-panel"><div class="ipa">/duː juː ˌʌndərˈstænd/ · /dʌz ðæt meɪk sens/</div></div>
-          <div class="ko">이해했나요? (두 표현 모두 자연스럽게 쓰여요)</div>
-          <div class="note">💡 <strong>Yes/No 의문문:</strong> 일반의문문이므로 끝을 올려 묻습니다(↗). understand는 3음절인 <strong>-stand</strong>에, sense는 핵심어 자체에 주 강세가 있습니다.</div>
-        </div>
-
-        <div class="phrase">
-          <div class="en-container">
-            <div class="en">Any *ques*tions? ↗</div>
-            <div class="action-btns">
-              <button class="action-btn listen-btn" title="원어민 음성 듣기">🔊</button>
-              <button class="action-btn copy-btn" title="문장 복사">📋</button>
-            </div>
-          </div>
-          <div class="pron-panel"><div class="ipa">/ˈeni ˈkwestʃənz/</div></div>
-          <div class="ko">질문 있나요?</div>
-          <div class="note">💡 <strong>상승조:</strong> 질문 유무를 확인하는 약식 의문문이므로 끝을 친근하게 올립니다(↗).</div>
-        </div>
-
-        <div class="phrase">
-          <div class="en-container">
-            <div class="en">Which *one* is the *an*swer? ↘</div>
-            <div class="action-btns">
-              <button class="action-btn listen-btn" title="원어민 음성 듣기">🔊</button>
-              <button class="action-btn copy-btn" title="문장 복사">📋</button>
-            </div>
-          </div>
-          <div class="pron-panel"><div class="ipa">/wɪtʃ wʌn ɪz ðə ˈænsər/</div></div>
-          <div class="ko">어떤 게 답이에요?</div>
-          <div class="note">💡 <strong>교실영어 지도 팁 (Wh-의문문 억양):</strong> Which로 시작하는 의문사 의문문이므로 끝을 하강(↘)합니다.</div>
-        </div>
-
-        <div class="phrase">
-          <div class="en-container">
-            <div class="en">Can you ex*plain* it in your *own* words? ↗</div>
-            <div class="action-btns">
-              <button class="action-btn listen-btn" title="원어민 음성 듣기">🔊</button>
-              <button class="action-btn copy-btn" title="문장 복사">📋</button>
-            </div>
-          </div>
-          <div class="pron-panel"><div class="ipa">/kæn juː ɪkˈspleɪn ɪt ɪn jʊər oʊn wɜːrdz/</div></div>
-          <div class="ko">자신의 말로 설명해 볼 수 있나요?</div>
-          <div class="note">💡 <strong>Yes/No 의문문:</strong> 능력이나 요청을 묻는 질문이므로 끝을 올려 묻습니다(↗).</div>
-        </div>
-
-        <div class="phrase">
-          <div class="en-container">
-            <div class="en">How did you *know*? ↘</div>
-            <div class="action-btns">
-              <button class="action-btn listen-btn" title="원어민 음성 듣기">🔊</button>
-              <button class="action-btn copy-btn" title="문장 복사">📋</button>
-            </div>
-          </div>
-          <div class="pron-panel"><div class="ipa">/haʊ dɪd juː noʊ/</div></div>
-          <div class="ko">어떻게 알았어요?</div>
-          <div class="note">💡 <strong>의문사 억양:</strong> How로 시작하는 의문사 질문이므로 끝을 내립니다(↘). 본동사 know에 초점이 실립니다.</div>
-        </div>
-      </div>
-
-      <div class="pattern">
-        <div class="pattern-header">🧩 문형: Let's + 동사 + what 절 (~한 것을 ~해 봅시다)</div>
-        <div class="pattern-grid">
-          <div class="phrase">
-            <div class="en-container">
-              <div>
-                <div class="en">Let's re*view* what we *learned*. ↘</div>
-                <div class="en en-alt">Let's *check* the *an*swers to*geth*er. ↘</div>
-              </div>
-              <div class="action-btns">
-                <button class="action-btn listen-btn" title="원어민 음성 듣기">🔊</button>
-                <button class="action-btn copy-btn" title="문장 복사">📋</button>
-              </div>
-            </div>
-            <div class="pron-panel"><div class="ipa">/lets rɪˈvjuː wʌt wiː lɜːrnd/ · /lets tʃek ðə ˈænsərz təˈɡeðər/</div></div>
-            <div class="ko">배운 내용을 복습해 볼까요. (두 표현 모두 자연스럽게 쓰여요)</div>
-            <div class="note">💡 <strong>교실영어 지도 팁 (what의 두 가지 쓰임):</strong><br>
-            • <strong>관계대명사 (~하는 것):</strong> 여기서 what은 의문사가 아니라 <em>"what we learned = 우리가 배운 것"</em>을 의미하는 관계사입니다.<br>
-            • <strong>의문사 (무엇):</strong> 아래 카드 <em>"What does a family do?"</em>처럼 직접 의문일 때 '무엇'으로 쓰입니다.</div>
-          </div>
-
-          <div class="phrase">
-            <div class="en-container">
-              <div class="en">Let's *see* what this is a*bout*. ↘</div>
-              <div class="action-btns">
-                <button class="action-btn listen-btn" title="원어민 음성 듣기">🔊</button>
-                <button class="action-btn copy-btn" title="문장 복사">📋</button>
-              </div>
-            </div>
-            <div class="pron-panel"><div class="ipa">/lets siː wʌt ðɪs ɪz əˈbaʊt/</div></div>
-            <div class="ko">어떤 내용인지 봅시다.</div>
-            <div class="note">💡 <strong>교실영어 지도 팁:</strong> "what this is about"은 "이것이 무엇에 관한 것인지(간접의문문)" 또는 "이 내용에 관한 것"을 뜻하며 문장 끝을 하강(↘)합니다.</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="phrase-group">
-        <div class="phrase">
-          <div class="en-container">
-            <div class="en">What does a *fam*ily do for their *mom*? ↘</div>
-            <div class="action-btns">
-              <button class="action-btn listen-btn" title="원어민 음성 듣기">🔊</button>
-              <button class="action-btn copy-btn" title="문장 복사">📋</button>
-            </div>
-          </div>
-          <div class="pron-panel"><div class="ipa">/wʌt dʌz ə ˈfæməli duː fɔːr ðer mɑːm/</div></div>
-          <div class="ko">가족은 엄마를 위해 어떤 일을 할까요?</div>
-          <div class="note">💡 <strong>교실영어 지도 팁 (의문사 what):</strong> 배운 내용을 나타내는 관계대명사 what과 달리 여기서는 '무엇'을 묻는 의문사이며, 의문사 질문이므로 끝은 하강(↘)합니다.</div>
-        </div>
-
-        <div class="phrase">
-          <div class="en-container">
-            <div class="en">What are they *do*ing at the *beach*? ↘</div>
-            <div class="action-btns">
-              <button class="action-btn listen-btn" title="원어민 음성 듣기">🔊</button>
-              <button class="action-btn copy-btn" title="문장 복사">📋</button>
-            </div>
-          </div>
-          <div class="pron-panel"><div class="ipa">/wʌt ɑːr ðeɪ ˈduːɪŋ æt ðə biːtʃ/</div></div>
-          <div class="ko">바닷가에서 그들은 무엇을 하고 있나요?</div>
-          <div class="note">💡 <strong>의문사 억양:</strong> What 의문문으로 끝을 내립니다(↘). doing과 beach에 강세가 들어갑니다.</div>
-        </div>
-
-        <div class="phrase">
-          <div class="en-container">
-            <div class="en">Who would like to pre*sent*? ↘</div>
-            <div class="action-btns">
-              <button class="action-btn listen-btn" title="원어민 음성 듣기">🔊</button>
-              <button class="action-btn copy-btn" title="문장 복사">📋</button>
-            </div>
-          </div>
-          <div class="pron-panel"><div class="ipa">/huː wʊd laɪk tu prɪˈzent/</div></div>
-          <div class="ko">발표해 볼 사람 있나요?</div>
-          <div class="note">💡 <strong>동사 vs 명사 품사 강세:</strong> '발표하다'라는 동사일 때는 2음절인 <strong>-sent</strong>(/prɪˈzent/)에 강세가 옵니다. (1음절에 주면 '선물, 현재'라는 명사/형용사 /ˈpreznt/가 됩니다.)</div>
-        </div>
-      </div>
-    </section>
-
-    <!-- 9. 수업 마무리 (4) -->
+    <!-- 7. 수업 마무리 (4) -->
     <section class="category" id="cat-wrapup">
       <h2 class="category-title">
-        <span>🔔 9. 수업 마무리</span>
+        <span>🔔 7. 수업 마무리</span>
         <span class="category-subtitle">Closing · 4개</span>
       </h2>
       <div class="phrase-group">
@@ -2638,15 +2671,32 @@
 
     function populateCategorySelect() {
       const select = document.getElementById('apCategory');
-      const categories = document.querySelectorAll('.category');
       select.innerHTML = '';
-      categories.forEach(cat => {
-        if (cat.id === 'cat-tips') return;
-        const titleSpan = cat.querySelector('.category-title > span:first-child');
+      let currentGroupLabel = null;
+      let currentOptgroup = null;
+      Array.from(document.querySelector('main.container').children).forEach(el => {
+        if (el.classList.contains('macro-title')) {
+          currentGroupLabel = el.textContent.trim();
+          currentOptgroup = null;
+          return;
+        }
+        if (!el.classList.contains('category') || el.id === 'cat-tips') return;
+
+        const titleSpan = el.querySelector('.category-title > span:first-child');
         const option = document.createElement('option');
-        option.value = cat.id;
-        option.textContent = titleSpan ? titleSpan.textContent.trim() : cat.id;
-        select.appendChild(option);
+        option.value = el.id;
+        option.textContent = titleSpan ? titleSpan.textContent.trim() : el.id;
+
+        if (currentGroupLabel) {
+          if (!currentOptgroup) {
+            currentOptgroup = document.createElement('optgroup');
+            currentOptgroup.label = currentGroupLabel;
+            select.appendChild(currentOptgroup);
+          }
+          currentOptgroup.appendChild(option);
+        } else {
+          select.appendChild(option);
+        }
       });
     }
 
