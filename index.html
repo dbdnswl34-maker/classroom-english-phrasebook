@@ -3457,6 +3457,9 @@
           en = translated;
         }
 
+        // 문장 첫 글자는 자동으로 대문자화 (문법 검사의 흔한 오탐 방지)
+        en = en.replace(/[a-zA-Z]/, c => c.toUpperCase());
+
         if (!/[\*↘↗]/.test(en)) {
           submitBtn.textContent = '강세 분석 중...';
           en = await autoMarkStressAndIntonation(en);
@@ -3478,17 +3481,13 @@
           ipa = await autoGenerateIpa(en);
         }
 
-        if (!grammarConfirmed) {
-          submitBtn.textContent = '문법 검사 중...';
-          const plainForCheck = en.replace(/[\*↘↗]/g, '').trim();
-          const issues = await checkGrammar(plainForCheck);
-          if (issues.length) {
-            renderGrammarWarning(issues);
-            grammarConfirmed = true;
-            submitBtn.disabled = false;
-            submitBtn.textContent = '⚠️ 오류 있음 - 그래도 ' + originalBtnText;
-            return;
-          }
+        submitBtn.textContent = '문법 검사 중...';
+        const plainForCheck = en.replace(/[\*↘↗]/g, '').trim();
+        const issues = await checkGrammar(plainForCheck);
+        if (issues.length) {
+          renderGrammarWarning(issues);
+          showToast('⚠️ 문법/철자 확인이 필요할 수 있어요 (저장은 됐어요, 아래 안내를 참고하세요).');
+        } else {
           clearGrammarWarning();
         }
       } catch (err) {
