@@ -887,6 +887,12 @@
       margin: 0.3rem 0 0;
       padding-left: 1.1rem;
     }
+
+    .similar-warning {
+      color: #1e40af;
+      background: #eff6ff;
+      border-color: #93c5fd;
+    }
   </style>
 </head>
 <body>
@@ -2017,14 +2023,17 @@
 
         <div class="phrase">
           <div class="en-container">
-            <div class="en">*Low*er your voice. ↘</div>
+            <div>
+              <div class="en">*Low*er your voice. ↘</div>
+              <div class="en en-alt">*Turn* *down* volume. ↘</div>
+            </div>
             <div class="action-btns">
               <button class="action-btn listen-btn" title="원어민 음성 듣기">🔊</button>
               <button class="action-btn copy-btn" title="문장 복사">📋</button>
             </div>
           </div>
-          <div class="pron-panel"><div class="ipa">/ˈloʊər jʊər vɔɪs/</div></div>
-          <div class="ko">목소리를 낮추세요.</div>
+          <div class="pron-panel"><div class="ipa">/ˈloʊər jʊər vɔɪs/ · /tɜːrn daʊn ˈvɑːljuːm/</div></div>
+          <div class="ko">목소리를 낮추세요. (두 표현 모두 자연스럽게 쓰여요)</div>
         </div>
 
         <div class="phrase">
@@ -2474,6 +2483,7 @@
           <input type="text" id="apEnglish" placeholder="예: Close the door, please.">
           <div class="form-hint">그냥 평문으로 입력하면 강세(*)와 억양(↘/↗)이 자동으로 표시돼요. 직접 *단어*와 ↘/↗를 넣으면 그대로 사용됩니다.</div>
           <div class="grammar-warning" id="apGrammarWarning"></div>
+          <div class="grammar-warning similar-warning" id="apSimilarWarning"></div>
         </div>
         <div class="form-field">
           <label for="apIpa">발음기호 (IPA, 선택)</label>
@@ -2950,6 +2960,8 @@
       grammarConfirmed = false;
       document.getElementById('apGrammarWarning').classList.remove('show');
       document.getElementById('apGrammarWarning').innerHTML = '';
+      document.getElementById('apSimilarWarning').classList.remove('show');
+      document.getElementById('apSimilarWarning').innerHTML = '';
       addModalTitle.textContent = '✏️ 문장 추가';
       addPhraseForm.querySelector('button[type="submit"]').textContent = '추가하기';
       apCategoryFields.classList.remove('hidden');
@@ -3068,6 +3080,8 @@
       grammarConfirmed = false;
       document.getElementById('apGrammarWarning').classList.remove('show');
       document.getElementById('apGrammarWarning').innerHTML = '';
+      document.getElementById('apSimilarWarning').classList.remove('show');
+      document.getElementById('apSimilarWarning').innerHTML = '';
     });
 
     function openEditModalForManual(id) {
@@ -3078,6 +3092,8 @@
       grammarConfirmed = false;
       document.getElementById('apGrammarWarning').classList.remove('show');
       document.getElementById('apGrammarWarning').innerHTML = '';
+      document.getElementById('apSimilarWarning').classList.remove('show');
+      document.getElementById('apSimilarWarning').innerHTML = '';
       addModalTitle.textContent = '✏️ 문장 수정';
       addPhraseForm.querySelector('button[type="submit"]').textContent = '수정하기';
       apCategoryFields.classList.remove('hidden');
@@ -3101,6 +3117,8 @@
       grammarConfirmed = false;
       document.getElementById('apGrammarWarning').classList.remove('show');
       document.getElementById('apGrammarWarning').innerHTML = '';
+      document.getElementById('apSimilarWarning').classList.remove('show');
+      document.getElementById('apSimilarWarning').innerHTML = '';
       addModalTitle.textContent = '✏️ 문장 수정';
       addPhraseForm.querySelector('button[type="submit"]').textContent = '수정하기';
       apCategoryFields.classList.remove('hidden');
@@ -3253,6 +3271,58 @@
     function clearGrammarWarning() {
       apGrammarWarning.classList.remove('show');
       apGrammarWarning.innerHTML = '';
+    }
+
+    // 비슷한 뜻의 기존 문장 찾기: 한글 뜻을 글자 2-gram으로 비교 (완벽하진 않지만 꽤 잘 잡아냄)
+    const apSimilarWarning = document.getElementById('apSimilarWarning');
+
+    function koBigrams(str) {
+      const s = (str || '').replace(/[^가-힣a-zA-Z0-9]/g, '');
+      const grams = [];
+      for (let i = 0; i < s.length - 1; i++) grams.push(s.slice(i, i + 2));
+      return grams;
+    }
+
+    function koSimilarity(a, b) {
+      const gramsA = koBigrams(a);
+      const gramsB = koBigrams(b);
+      if (!gramsA.length || !gramsB.length) return 0;
+      const counts = {};
+      gramsB.forEach(g => { counts[g] = (counts[g] || 0) + 1; });
+      let matches = 0;
+      gramsA.forEach(g => {
+        if (counts[g] > 0) { matches++; counts[g]--; }
+      });
+      return (2 * matches) / (gramsA.length + gramsB.length);
+    }
+
+    function findSimilarExistingPhrases(koText, excludeId) {
+      if (!koText || !koText.trim()) return [];
+      const results = [];
+      document.querySelectorAll('.category:not(#cat-tips) .phrase').forEach(card => {
+        if (card.dataset.manualId === excludeId || card.dataset.builtinId === excludeId) return;
+        const koEl = card.querySelector('.ko');
+        if (!koEl) return;
+        const otherKo = koEl.textContent.trim();
+        const score = koSimilarity(koText, otherKo);
+        if (score >= 0.4) {
+          const enEl = card.querySelector('.en');
+          results.push({ en: enEl ? enEl.textContent.trim() : '', ko: otherKo, score });
+        }
+      });
+      results.sort((a, b) => b.score - a.score);
+      return results.slice(0, 2);
+    }
+
+    function renderSimilarWarning(matches) {
+      if (!matches.length) {
+        apSimilarWarning.classList.remove('show');
+        apSimilarWarning.innerHTML = '';
+        return;
+      }
+      const items = matches.map(m => `<li>${escapeHtml(m.en)} <em>(${escapeHtml(m.ko)})</em></li>`).join('');
+      apSimilarWarning.innerHTML = `🔎 뜻이 비슷한 기존 문장이 있어요 (참고용, 원하시면 병합을 요청해 주세요):<ul>${items}</ul>`;
+      apSimilarWarning.classList.add('show');
     }
 
     // 자동 강세(*단어*) 및 억양(↘/↗) 표시 (이미 *나 ↘/↗가 있으면 건드리지 않음)
@@ -3481,6 +3551,12 @@
           showToast('⚠️ 문법/철자 확인이 필요할 수 있어요 (저장은 됐어요, 아래 안내를 참고하세요).');
         } else {
           clearGrammarWarning();
+        }
+
+        const similar = findSimilarExistingPhrases(ko, editingType ? editingId : null);
+        renderSimilarWarning(similar);
+        if (similar.length && !issues.length) {
+          showToast('🔎 뜻이 비슷한 기존 문장이 있어요 (저장은 됐어요, 아래 안내를 참고하세요).');
         }
       } catch (err) {
         // 자동화 중 일부가 실패해도 입력된 내용으로 계속 진행
