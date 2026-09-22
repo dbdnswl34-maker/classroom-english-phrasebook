@@ -85,6 +85,14 @@
       margin-top: 0;
     }
 
+    .cat-nav-add-btn {
+      width: 100%;
+      justify-content: center;
+      margin-top: 0.9rem;
+      font-size: 0.82rem;
+      padding: 0.55rem 0.9rem;
+    }
+
     .cat-nav-btn {
       display: inline-flex;
       align-items: center;
@@ -934,6 +942,7 @@
         <a href="#cat-wrapup" class="cat-nav-btn">🔔 7. 수업 마무리</a>
         <a href="#cat-tips" class="cat-nav-btn">💡 지도 핵심 팁</a>
       </div>
+      <button type="button" id="openAddPhraseBtnNav" class="add-phrase-btn cat-nav-add-btn">➕ 문장 직접 추가하기</button>
     </nav>
 
     <!-- 검색창 -->
@@ -2994,12 +3003,16 @@
       resetModalToAddMode();
     }
 
-    openAddPhraseBtn.addEventListener('click', () => {
+    function openAddPhraseModal() {
       resetModalToAddMode();
       populateCategorySelect();
       populateSubgroupSelect(document.getElementById('apCategory').value);
       addPhraseModal.classList.add('show');
-    });
+    }
+
+    openAddPhraseBtn.addEventListener('click', openAddPhraseModal);
+    const openAddPhraseBtnNav = document.getElementById('openAddPhraseBtnNav');
+    if (openAddPhraseBtnNav) openAddPhraseBtnNav.addEventListener('click', openAddPhraseModal);
 
     function openFillKoModal(items) {
       const container = document.getElementById('fillKoList');
