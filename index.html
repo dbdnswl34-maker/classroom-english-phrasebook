@@ -3319,19 +3319,39 @@
       return (2 * matches) / (gramsA.length + gramsB.length);
     }
 
-    function findSimilarExistingPhrases(koText, excludeId) {
-      if (!koText || !koText.trim()) return [];
+    // 영어 문장의 내용어(함수어 제외) 집합 간 자카드 유사도 — 한글 뜻이 없을 때의 보조 비교 수단
+    function enContentWordSet(text) {
+      const words = (text || '').toLowerCase().replace(/[\*↘↗]/g, '').match(/[a-z']+/g) || [];
+      const stemmed = words
+        .filter(w => !FUNCTION_WORDS.has(w))
+        .map(w => (w.length > 3 && w.endsWith('s')) ? w.slice(0, -1) : w);
+      return new Set(stemmed);
+    }
+
+    function enSimilarity(a, b) {
+      const setA = enContentWordSet(a);
+      const setB = enContentWordSet(b);
+      if (!setA.size || !setB.size) return 0;
+      let shared = 0;
+      setA.forEach(w => { if (setB.has(w)) shared++; });
+      return shared / (setA.size + setB.size - shared);
+    }
+
+    function findSimilarExistingPhrases(koText, enText, excludeId) {
+      if ((!koText || !koText.trim()) && (!enText || !enText.trim())) return [];
       const results = [];
       document.querySelectorAll('.category:not(#cat-tips) .phrase').forEach(card => {
         if (card.dataset.manualId === excludeId || card.dataset.builtinId === excludeId) return;
         const koEl = card.querySelector('.ko');
-        if (!koEl) return;
-        const otherKo = koEl.textContent.trim();
-        const score = koSimilarity(koText, otherKo);
-        if (score >= 0.4) {
-          const enEl = card.querySelector('.en');
+        const enEl = card.querySelector('.en');
+        const otherKo = koEl ? koEl.textContent.trim() : '';
+        const otherEn = enEl ? enEl.textContent.trim() : '';
+        const koScore = koText ? koSimilarity(koText, otherKo) : 0;
+        const enScore = enText ? enSimilarity(enText, otherEn) : 0;
+        const score = Math.max(koScore, enScore);
+        if (koScore >= 0.4 || enScore >= 0.35) {
           results.push({
-            en: enEl ? enEl.textContent.trim() : '',
+            en: otherEn,
             ko: otherKo,
             score,
             type: card.dataset.manualId ? 'manual' : 'builtin',
@@ -3646,7 +3666,7 @@
         // 자동화 중 일부가 실패해도 입력된 내용으로 계속 진행
       }
 
-      const similar = findSimilarExistingPhrases(ko, editingType ? editingId : null);
+      const similar = findSimilarExistingPhrases(ko, en, editingType ? editingId : null);
 
       submitBtn.disabled = false;
       submitBtn.textContent = originalBtnText;
