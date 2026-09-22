@@ -2640,11 +2640,13 @@
       const ipaHtml = escapeHtml(data.ipa);
       const koHtml = escapeHtml(data.ko);
       const noteHtml = escapeHtml(data.note);
+      const altsHtml = (data.alts || []).map(alt => `<div class="en en-alt">${escapeHtml(alt)}</div>`).join('');
 
       card.innerHTML = `
         <div class="en-container">
           <div>
             <div class="en">${enHtml}</div>
+            ${altsHtml}
             <span class="manual-tag">직접추가</span>
           </div>
           <div class="action-btns">
@@ -2660,6 +2662,7 @@
       `;
 
       applyStressAndWords(card.querySelector('.en'));
+      card.querySelectorAll('.en-alt').forEach(applyStressAndWords);
       return card;
     }
 
@@ -2861,11 +2864,28 @@
 
     // 카드의 문장/발음기호/한글 뜻/메모 내용을 새 값으로 갱신
     function applyContentToCard(card, data) {
+      const enContainer = card.querySelector('.en-container');
       const enEl = card.querySelector('.en');
+      let wrapper = enEl.parentElement;
+      if (wrapper === enContainer && data.alts && data.alts.length) {
+        wrapper = document.createElement('div');
+        enContainer.insertBefore(wrapper, enEl);
+        wrapper.appendChild(enEl);
+      }
       enEl.textContent = data.en;
       applyStressAndWords(enEl);
 
-      const enContainer = card.querySelector('.en-container');
+      if (wrapper !== enContainer) {
+        wrapper.querySelectorAll('.en-alt').forEach(el => el.remove());
+        (data.alts || []).forEach(altText => {
+          const altEl = document.createElement('div');
+          altEl.className = 'en en-alt';
+          altEl.textContent = altText;
+          wrapper.appendChild(altEl);
+          applyStressAndWords(altEl);
+        });
+      }
+
       let pronPanel = card.querySelector('.pron-panel');
       if (data.ipa) {
         if (!pronPanel) {
@@ -2958,6 +2978,7 @@
       editingType = null;
       editingId = null;
       grammarConfirmed = false;
+      lastSavedManualPhrase = null;
       document.getElementById('apGrammarWarning').classList.remove('show');
       document.getElementById('apGrammarWarning').innerHTML = '';
       document.getElementById('apSimilarWarning').classList.remove('show');
@@ -3309,23 +3330,88 @@
         const score = koSimilarity(koText, otherKo);
         if (score >= 0.4) {
           const enEl = card.querySelector('.en');
-          results.push({ en: enEl ? enEl.textContent.trim() : '', ko: otherKo, score });
+          results.push({
+            en: enEl ? enEl.textContent.trim() : '',
+            ko: otherKo,
+            score,
+            type: card.dataset.manualId ? 'manual' : 'builtin',
+            id: card.dataset.manualId || card.dataset.builtinId
+          });
         }
       });
       results.sort((a, b) => b.score - a.score);
       return results.slice(0, 2);
     }
 
-    function renderSimilarWarning(matches) {
+    // 방금 저장한 새 문장(합치기 버튼에서 사용) — 병합하면 이 항목은 지우고 대상 카드에 합쳐짐
+    let lastSavedManualPhrase = null;
+
+    function renderSimilarWarning(matches, offerMerge) {
       if (!matches.length) {
         apSimilarWarning.classList.remove('show');
         apSimilarWarning.innerHTML = '';
         return;
       }
-      const items = matches.map(m => `<li>${escapeHtml(m.en)} <em>(${escapeHtml(m.ko)})</em></li>`).join('');
-      apSimilarWarning.innerHTML = `🔎 뜻이 비슷한 기존 문장이 있어요 (참고용, 원하시면 병합을 요청해 주세요):<ul>${items}</ul>`;
+      const items = matches.map((m, i) => `
+        <li>
+          ${escapeHtml(m.en)} <em>(${escapeHtml(m.ko)})</em>
+          ${offerMerge ? `<button type="button" class="btn-secondary merge-into-btn" style="margin-left:0.4rem; padding:0.15rem 0.55rem; font-size:0.76rem;" data-merge-type="${m.type}" data-merge-id="${escapeHtml(m.id)}">이 문장에 합치기</button>` : ''}
+        </li>
+      `).join('');
+      apSimilarWarning.innerHTML = `🔎 뜻이 비슷한 기존 문장이 있어요${offerMerge ? '' : ' (참고용, 원하시면 병합을 요청해 주세요)'}:<ul>${items}</ul>`;
       apSimilarWarning.classList.add('show');
     }
+
+    function mergeLastSavedIntoTarget(targetType, targetId) {
+      if (!lastSavedManualPhrase) return;
+      const newEn = lastSavedManualPhrase.en;
+      const newIpa = lastSavedManualPhrase.ipa;
+
+      if (targetType === 'manual') {
+        const list = loadManualPhrases();
+        const idx = list.findIndex(p => p.id === targetId);
+        if (idx === -1) return;
+        list[idx].alts = [...(list[idx].alts || []), newEn];
+        if (newIpa) list[idx].ipa = [list[idx].ipa, newIpa].filter(Boolean).join(' · ');
+        // 방금 저장했던 별도 카드는 이제 병합됐으니 제거
+        const remaining = list.filter(p => p.id !== lastSavedManualPhrase.id);
+        const finalIdx = remaining.findIndex(p => p.id === targetId);
+        saveManualPhrases(remaining);
+        const targetCard = document.querySelector(`.phrase[data-manual-id="${targetId}"]`);
+        const newCard = document.querySelector(`.phrase[data-manual-id="${lastSavedManualPhrase.id}"]`);
+        if (newCard) newCard.remove();
+        if (targetCard) applyContentToCard(targetCard, remaining[finalIdx]);
+      } else {
+        const overrides = loadBuiltinOverrides();
+        const targetCard = document.querySelector(`.phrase[data-builtin-id="${targetId}"]`);
+        if (!targetCard) return;
+        const base = overrides[targetId] || {
+          en: reconstructEnSource(targetCard.querySelector('.en')),
+          ipa: targetCard.querySelector('.ipa') ? targetCard.querySelector('.ipa').textContent.trim() : '',
+          ko: targetCard.querySelector('.ko') ? targetCard.querySelector('.ko').textContent.trim() : '',
+          note: targetCard.querySelector('.note') ? targetCard.querySelector('.note').textContent.replace(/^💡\s*/, '').trim() : ''
+        };
+        base.alts = [...(base.alts || []), newEn];
+        if (newIpa) base.ipa = [base.ipa, newIpa].filter(Boolean).join(' · ');
+        saveBuiltinOverride(targetId, base);
+        applyContentToCard(targetCard, base);
+
+        const list = loadManualPhrases().filter(p => p.id !== lastSavedManualPhrase.id);
+        saveManualPhrases(list);
+        const newCard = document.querySelector(`.phrase[data-manual-id="${lastSavedManualPhrase.id}"]`);
+        if (newCard) newCard.remove();
+      }
+
+      lastSavedManualPhrase = null;
+      closeAddModal();
+      showToast('✅ 문장을 합쳤습니다!');
+    }
+
+    document.getElementById('apSimilarWarning').addEventListener('click', (e) => {
+      const btn = e.target.closest('.merge-into-btn');
+      if (!btn) return;
+      mergeLastSavedIntoTarget(btn.dataset.mergeType, btn.dataset.mergeId);
+    });
 
     // 자동 강세(*단어*) 및 억양(↘/↗) 표시 (이미 *나 ↘/↗가 있으면 건드리지 않음)
     const FUNCTION_WORDS = new Set([
@@ -3555,14 +3641,11 @@
           clearGrammarWarning();
         }
 
-        const similar = findSimilarExistingPhrases(ko, editingType ? editingId : null);
-        renderSimilarWarning(similar);
-        if (similar.length && !issues.length) {
-          showToast('🔎 뜻이 비슷한 기존 문장이 있어요 (저장은 됐어요, 아래 안내를 참고하세요).');
-        }
       } catch (err) {
         // 자동화 중 일부가 실패해도 입력된 내용으로 계속 진행
       }
+
+      const similar = findSimilarExistingPhrases(ko, editingType ? editingId : null);
 
       submitBtn.disabled = false;
       submitBtn.textContent = originalBtnText;
@@ -3616,8 +3699,14 @@
         saveManualPhrases(list);
 
         addPhraseToDOM(categoryId, data);
-        closeAddModal();
         showToast('✅ 문장이 추가되었습니다!');
+
+        if (similar.length) {
+          lastSavedManualPhrase = data;
+          renderSimilarWarning(similar, true);
+          return; // 병합할 수 있도록 모달을 열어둠 (닫기 버튼으로 직접 닫을 수 있음)
+        }
+        closeAddModal();
       }
     });
 
