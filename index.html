@@ -725,6 +725,8 @@
     .add-phrase-row {
       display: flex;
       justify-content: flex-end;
+      gap: 0.6rem;
+      flex-wrap: wrap;
       margin-bottom: 1.4rem;
     }
 
@@ -748,6 +750,19 @@
       background: var(--primary-hover);
       transform: translateY(-1px);
       box-shadow: var(--shadow-md);
+    }
+
+    .add-phrase-btn-secondary {
+      background: #f1f5f9;
+      color: #475569;
+      border: 1.5px solid var(--border-color);
+      box-shadow: none;
+    }
+
+    .add-phrase-btn-secondary:hover {
+      background: #e2e8f0;
+      color: #334155;
+      box-shadow: none;
     }
 
     .modal-card.wide {
@@ -923,6 +938,7 @@
 
     <!-- 문장 직접 추가 버튼 -->
     <div class="add-phrase-row">
+      <button type="button" id="fillMissingKoBtn" class="add-phrase-btn add-phrase-btn-secondary">🔍 빠진 뜻 채우기</button>
       <button type="button" id="openAddPhraseBtn" class="add-phrase-btn">➕ 문장 직접 추가하기</button>
     </div>
 
@@ -2903,6 +2919,44 @@
       populateCategorySelect();
       populateSubgroupSelect(document.getElementById('apCategory').value);
       addPhraseModal.classList.add('show');
+    });
+
+    document.getElementById('fillMissingKoBtn').addEventListener('click', async () => {
+      const btn = document.getElementById('fillMissingKoBtn');
+      const list = loadManualPhrases();
+      const missing = list.filter(p => !p.ko);
+      if (!missing.length) {
+        showToast('✅ 빠진 뜻이 없습니다!');
+        return;
+      }
+
+      const originalText = btn.textContent;
+      btn.disabled = true;
+      let filled = 0;
+
+      for (let i = 0; i < missing.length; i++) {
+        btn.textContent = `번역 중... (${i + 1}/${missing.length})`;
+        const item = missing[i];
+        const plainEn = item.en.replace(/[\*↘↗]/g, '').trim();
+        const translated = await translateText(plainEn, 'en|ko');
+        if (translated) {
+          item.ko = translated;
+          filled++;
+          const idx = list.findIndex(p => p.id === item.id);
+          if (idx !== -1) list[idx] = item;
+          const card = document.querySelector(`.phrase[data-manual-id="${item.id}"]`);
+          if (card) applyContentToCard(card, item);
+        }
+      }
+
+      saveManualPhrases(list);
+      btn.disabled = false;
+      btn.textContent = originalText;
+
+      const stillMissing = missing.length - filled;
+      showToast(stillMissing > 0
+        ? `✅ ${filled}개 채움, ⚠️ ${stillMissing}개는 실패 (다시 눌러보세요)`
+        : `✅ ${filled}개 문장의 뜻을 채웠습니다!`);
     });
     document.getElementById('apCategory').addEventListener('change', (e) => {
       populateSubgroupSelect(e.target.value);
