@@ -1467,9 +1467,9 @@
         </div>
       </div>
 
-            <div class="phrase-subgroup-title">✏️ 쓰기 및 확인 점검</div>
+                        <div class="phrase-subgroup-title">✏️ 쓰기 및 확인 점검</div>
       <div class="phrase-group">
-<div class="phrase">
+        <div class="phrase">
           <div class="en-container">
             <div class="en">Write it *down* in your *note*book. ↘</div>
             <div class="action-btns">
@@ -1544,10 +1544,7 @@
             <div class="ko">어떤 내용인지 봅시다.</div>
             <div class="note">💡 <strong>교실영어 지도 팁:</strong> "what this is about"은 "이것이 무엇에 관한 것인지(간접의문문)" 또는 "이 내용에 관한 것"을 뜻하며 문장 끝을 하강(↘)합니다.</div>
           </div>
-        </div>
-      </div>
 
-      <div class="phrase-group">
         <div class="phrase">
           <div class="en-container">
             <div class="en">What does a *fam*ily do for their *mom*? ↘</div>
@@ -1573,7 +1570,8 @@
           <div class="ko">바닷가에서 그들은 무엇을 하고 있나요?</div>
           <div class="note">💡 <strong>의문사 억양:</strong> What 의문문으로 끝을 내립니다(↘). doing과 beach에 강세가 들어갑니다.</div>
         </div>
-      <div class="phrase">
+
+        <div class="phrase">
           <div class="en-container">
             <div>
               <div class="en">Do you under*stand*? ↗</div>
@@ -1665,12 +1663,8 @@
           <div class="pron-panel"><div class="ipa">/lets tʃek ðə ˈænsərz təˈɡeðər/</div></div>
           <div class="ko">함께 답을 확인해 볼까요.</div>
         </div>
-      </div>
 
-      <div class="pattern">
-        <div class="pattern-header">🧩 문형: Let's + 동사 + what 절 (~한 것을 ~해 봅시다)</div>
-        <div class="pattern-grid">
-          <div class="phrase">
+        <div class="phrase">
             <div class="en-container">
               <div class="en">Let's re*view* what we *learned*. ↘</div>
               <div class="action-btns">
@@ -1685,7 +1679,7 @@
             • <strong>의문사 (무엇):</strong> 아래 카드 <em>"What does a family do?"</em>처럼 직접 의문일 때 '무엇'으로 쓰입니다.</div>
           </div>
 
-          <div class="phrase">
+        <div class="phrase">
           <div class="en-container">
             <div class="en">*Check* your *an*swers by your*self*. ↘</div>
             <div class="action-btns">
@@ -1758,7 +1752,8 @@
           <div class="pron-panel"><div class="ipa">/ˈfɪnɪʃ ɪt ˈdʊrɪŋ breɪk taɪm/</div></div>
           <div class="ko">쉬는 시간에 마저 하세요.</div>
         </div>
-              </div>
+
+      </div>
 
       <div class="phrase-subgroup-title">📑 시험지·활동지</div>
       <div class="phrase-group">
@@ -1840,7 +1835,7 @@
       </div>
     </section>
 
-    <!-- 4. 칭찬 & 격려 (8) -->
+<!-- 4. 칭찬 & 격려 (8) -->
     <section class="category" id="cat-praise">
       <h2 class="category-title">
         <span>🌟 4. 칭찬 &amp; 격려</span>
@@ -2464,6 +2459,27 @@
           <div class="form-hint">그냥 평문으로 입력하면 강세(*)와 억양(↘/↗)이 자동으로 표시돼요. 직접 *단어*와 ↘/↗를 넣으면 그대로 사용됩니다.</div>
           <div class="grammar-warning" id="apGrammarWarning"></div>
           <div class="grammar-warning similar-warning" id="apSimilarWarning"></div>
+          <!-- 직접 기존 문장 찾아 합치기 UI -->
+          <div id="manualMergeSection" style="margin-top:0.75rem; background:#f8fafc; border:1.5px dashed #94a3b8; border-radius:10px; padding:0.65rem 0.85rem;">
+            <div style="display:flex; justify-content:space-between; align-items:center; cursor:pointer;" id="manualMergeToggleHeader">
+              <span style="font-size:0.82rem; font-weight:700; color:#1e293b; display:flex; align-items:center; gap:0.35rem;">
+                <span>🔗 기존 문장에 합치기 (직접 검색)</span>
+              </span>
+              <span id="manualMergeToggleIcon" style="font-size:0.76rem; color:#2563eb; font-weight:700;">직접 찾기 ▼</span>
+            </div>
+            <div id="manualMergeBody" style="display:none; margin-top:0.6rem;">
+              <p style="font-size:0.75rem; color:#64748b; margin-bottom:0.4rem; line-height:1.4;">
+                새 독립 카드로 만들지 않고, 기존 문장의 <strong>유사 표현(대체 표현)</strong>으로 함께 묶습니다.
+              </p>
+              <div style="position:relative;">
+                <input type="text" id="manualMergeSearchInput" placeholder="합칠 기존 문장의 영어/한글 검색 (예: paper, stand, 숙제)..." style="width:100%; padding:0.45rem 0.65rem 0.45rem 1.8rem; font-size:0.82rem; border:1.5px solid #cbd5e1; border-radius:8px; outline:none; box-sizing:border-box;">
+                <span style="position:absolute; left:0.55rem; top:50%; transform:translateY(-50%); font-size:0.8rem; color:#94a3b8;">🔍</span>
+              </div>
+              <div id="manualMergeResultsList" style="max-height:170px; overflow-y:auto; margin-top:0.5rem; display:flex; flex-direction:column; gap:0.35rem;">
+                <div style="font-size:0.75rem; color:#94a3b8; text-align:center; padding:0.6rem 0;">키워드를 입력하면 합칠 수 있는 문장 목록이 나타납니다.</div>
+              </div>
+            </div>
+          </div>
         </div>
         <div class="form-field">
           <label for="apIpa">발음기호 (IPA, 선택)</label>
@@ -3680,7 +3696,13 @@
           ${offerMerge ? `<button type="button" class="btn-secondary merge-into-btn" style="margin-left:0.4rem; padding:0.15rem 0.55rem; font-size:0.76rem;" data-merge-type="${m.type}" data-merge-id="${escapeHtml(m.id)}">이 문장에 합치기</button>` : ''}
         </li>
       `).join('');
-      apSimilarWarning.innerHTML = `🔎 뜻이 비슷한 기존 문장이 있어요${offerMerge ? '' : ' (참고용, 원하시면 병합을 요청해 주세요)'}:<ul>${items}</ul>`;
+      apSimilarWarning.innerHTML = `🔎 뜻이 비슷한 기존 문장이 감지되었어요:<ul>${items}</ul><div style="margin-top:0.45rem; font-size:0.76rem; color:#1e40af;"><button type="button" id="openManualMergeFromWarningBtn" style="background:none; border:none; color:#2563eb; font-weight:700; text-decoration:underline; cursor:pointer; font-size:0.78rem; padding:0;">🔍 다른 기존 문장 직접 검색해서 합치기</button></div>`;
+      const openFromWarning = document.getElementById('openManualMergeFromWarningBtn');
+      if (openFromWarning) {
+        openFromWarning.addEventListener('click', () => {
+          setManualMergeExpanded(true);
+        });
+      }
       apSimilarWarning.classList.add('show');
     }
 
@@ -3735,6 +3757,177 @@
       if (!btn) return;
       mergeLastSavedIntoTarget(btn.dataset.mergeType, btn.dataset.mergeId);
     });
+
+    // --- 사용자가 직접 기존 문장 검색하여 합치기 (수동 병합) 로직 ---
+    const manualMergeSection = document.getElementById('manualMergeSection');
+    const manualMergeToggleHeader = document.getElementById('manualMergeToggleHeader');
+    const manualMergeToggleIcon = document.getElementById('manualMergeToggleIcon');
+    const manualMergeBody = document.getElementById('manualMergeBody');
+    const manualMergeSearchInput = document.getElementById('manualMergeSearchInput');
+    const manualMergeResultsList = document.getElementById('manualMergeResultsList');
+
+    let manualMergeExpanded = false;
+
+    function setManualMergeExpanded(expand) {
+      manualMergeExpanded = expand;
+      if (manualMergeBody) manualMergeBody.style.display = expand ? 'block' : 'none';
+      if (manualMergeToggleIcon) manualMergeToggleIcon.textContent = expand ? '접기 ▲' : '직접 찾기 ▼';
+      if (expand && manualMergeSearchInput) {
+        manualMergeSearchInput.focus();
+        searchExistingPhrasesForMerge(manualMergeSearchInput.value);
+      }
+    }
+
+    if (manualMergeToggleHeader) {
+      manualMergeToggleHeader.addEventListener('click', () => {
+        setManualMergeExpanded(!manualMergeExpanded);
+      });
+    }
+
+    // 사이트의 모든 기존 문장 목록 수집
+    function getAllPhrasesForMerge() {
+      const results = [];
+      document.querySelectorAll('.category').forEach(cat => {
+        if (cat.id === 'cat-tips') return;
+        cat.querySelectorAll('.phrase').forEach(card => {
+          const enEl = card.querySelector('.en');
+          const koEl = card.querySelector('.ko');
+          if (!enEl) return;
+          const type = card.dataset.manualId ? 'manual' : 'builtin';
+          const id = card.dataset.manualId || card.dataset.builtinId;
+          const rawEn = enEl.textContent.trim();
+          const cleanEn = rawEn.replace(/\*/g, '');
+          const ko = koEl ? koEl.textContent.trim() : '';
+          results.push({ type, id, en: cleanEn, rawEn, ko, card });
+        });
+      });
+      return results;
+    }
+
+    // 실시간 검색 렌더링
+    function searchExistingPhrasesForMerge(keyword) {
+      if (!manualMergeResultsList) return;
+      const q = (keyword || '').trim().toLowerCase();
+      if (!q) {
+        manualMergeResultsList.innerHTML = '<div style="font-size:0.75rem; color:#94a3b8; text-align:center; padding:0.6rem 0;">키워드를 입력하면 합칠 수 있는 문장 목록이 나타납니다.</div>';
+        return;
+      }
+
+      const all = getAllPhrasesForMerge();
+      // 제외: 현재 편집 중인 카드 or 방금 추가된 카드 자체
+      const filtered = all.filter(item => {
+        if (lastSavedManualPhrase && item.id === lastSavedManualPhrase.id) return false;
+        if (editingId && item.id === editingId) return false;
+        return item.en.toLowerCase().includes(q) || item.ko.toLowerCase().includes(q);
+      });
+
+      if (!filtered.length) {
+        manualMergeResultsList.innerHTML = `<div style="font-size:0.75rem; color:#94a3b8; text-align:center; padding:0.6rem 0;">'${escapeHtml(keyword)}'에 해당하는 기존 문장이 없습니다.</div>`;
+        return;
+      }
+
+      manualMergeResultsList.innerHTML = filtered.slice(0, 15).map(item => `
+        <div style="display:flex; justify-content:space-between; align-items:center; background:white; border:1px solid #e2e8f0; border-radius:8px; padding:0.45rem 0.65rem; gap:0.5rem;">
+          <div style="flex:1; min-width:0;">
+            <div style="font-size:0.8rem; font-weight:700; color:#0f172a; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" title="${escapeHtml(item.en)}">${escapeHtml(item.en)}</div>
+            <div style="font-size:0.72rem; color:#64748b; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" title="${escapeHtml(item.ko)}">${escapeHtml(item.ko || '(뜻 없음)')}</div>
+          </div>
+          <button type="button" class="btn-primary direct-merge-btn" data-type="${item.type}" data-id="${escapeHtml(item.id)}" style="background:#2563eb; font-size:0.74rem; padding:0.3rem 0.65rem; white-space:nowrap; flex-shrink:0;">이 문장에 합치기</button>
+        </div>
+      `).join('');
+    }
+
+    if (manualMergeSearchInput) {
+      manualMergeSearchInput.addEventListener('input', (e) => {
+        searchExistingPhrasesForMerge(e.target.value);
+      });
+    }
+
+    // 직접 검색 목록에서 [이 문장에 합치기] 클릭 처리
+    if (manualMergeResultsList) {
+      manualMergeResultsList.addEventListener('click', async (e) => {
+        const btn = e.target.closest('.direct-merge-btn');
+        if (!btn) return;
+        const targetType = btn.dataset.type;
+        const targetId = btn.dataset.id;
+
+        // 경우 1: 이미 추가 버튼을 눌러 lastSavedManualPhrase 가 존재하는 경우
+        if (lastSavedManualPhrase) {
+          mergeLastSavedIntoTarget(targetType, targetId);
+          return;
+        }
+
+        // 경우 2: 폼에서 작성 중인 상태에서 바로 특정 문장과 합치는 경우
+        let en = (document.getElementById('apEnglish').value || '').trim();
+        let ipa = (document.getElementById('apIpa').value || '').trim();
+        let ko = (document.getElementById('apKorean').value || '').trim();
+
+        if (!en) {
+          if (ko) {
+            btn.textContent = '번역 중...';
+            btn.disabled = true;
+            en = await translateText(ko, 'ko|en');
+            btn.disabled = false;
+          }
+        }
+
+        if (!en) {
+          alert('합칠 영어 문장을 입력해 주세요.');
+          document.getElementById('apEnglish').focus();
+          return;
+        }
+
+        // 대문자화 & 강세 분석
+        en = en.replace(/[a-zA-Z]/, c => c.toUpperCase());
+        if (!/[\*↘↗]/.test(en)) {
+          en = await autoMarkStressAndIntonation(en);
+        }
+        if (!ipa) {
+          ipa = await autoGenerateIpa(en);
+        }
+
+        // 대상 카드에 합치기 실행
+        if (targetType === 'manual') {
+          const list = loadManualPhrases();
+          const idx = list.findIndex(p => p.id === targetId);
+          if (idx !== -1) {
+            list[idx].alts = [...(list[idx].alts || []), en];
+            if (ipa) list[idx].ipa = [list[idx].ipa, ipa].filter(Boolean).join(' · ');
+            saveManualPhrases(list);
+            const targetCard = document.querySelector(`.phrase[data-manual-id="${targetId}"]`);
+            if (targetCard) applyContentToCard(targetCard, list[idx]);
+          }
+        } else {
+          const overrides = loadBuiltinOverrides();
+          const targetCard = document.querySelector(`.phrase[data-builtin-id="${targetId}"]`);
+          if (targetCard) {
+            const base = overrides[targetId] || {
+              en: reconstructEnSource(targetCard.querySelector('.en')),
+              ipa: targetCard.querySelector('.ipa') ? targetCard.querySelector('.ipa').textContent.trim() : '',
+              ko: targetCard.querySelector('.ko') ? targetCard.querySelector('.ko').textContent.trim() : '',
+              note: targetCard.querySelector('.note') ? targetCard.querySelector('.note').textContent.replace(/^💡\s*/, '').trim() : '',
+              alts: Array.from(targetCard.querySelectorAll('.en.en-alt')).map(reconstructEnSource)
+            };
+            base.alts = [...(base.alts || []), en];
+            if (ipa) base.ipa = [base.ipa, ipa].filter(Boolean).join(' · ');
+            saveBuiltinOverride(targetId, base);
+            applyContentToCard(targetCard, base);
+          }
+        }
+
+        closeAddModal();
+        showToast('✅ 선택하신 문장에 유사 표현으로 합쳤습니다!');
+      });
+    }
+
+    // 모달 닫을 때 수동 검색 섹션 초기화
+    const oldCloseAddModal = closeAddModal;
+    closeAddModal = function() {
+      setManualMergeExpanded(false);
+      if (manualMergeSearchInput) manualMergeSearchInput.value = '';
+      if (manualMergeResultsList) manualMergeResultsList.innerHTML = '<div style="font-size:0.75rem; color:#94a3b8; text-align:center; padding:0.6rem 0;">키워드를 입력하면 합칠 수 있는 문장 목록이 나타납니다.</div>';
+      oldCloseAddModal();
+    };
 
     // 자동 강세(*단어*) 및 억양(↘/↗) 표시 (이미 *나 ↘/↗가 있으면 건드리지 않음)
     const FUNCTION_WORDS = new Set([
